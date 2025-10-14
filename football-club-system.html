@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Club Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 0;
+    }
+
+    h1 {
+      background: #006400;
+      color: white;
+      padding: 15px;
+      margin: 0;
+    }
+
+    .container {
+      width: 320px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    button {
+      background: green;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: darkgreen;
+    }
+
+    input {
+      display: block;
+      width: 90%;
+      padding: 8px;
+      margin: 8px auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+      background: #eaeaea;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .login-container {
+      background: white;
+      padding: 30px;
+      width: 300px;
+      margin: 100px auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    #loginMessage {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="login-container">
+    <h1>⚽ Football Club System</h1>
+    <p>Admin Login</p>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginMessage"></p>
+  </div>
+
+  <!-- DASHBOARD PAGE -->
+  <div id="dashboardPage" class="hidden">
+    <h1>⚽ Football Club Management Dashboard</h1>
+    <button onclick="logout()">Logout</button>
+
+    <div class="container">
+      <h2>Players</h2>
+      <ul id="playerList"></ul>
+      <input type="text" id="playerName" placeholder="Player Name">
+      <input type="text" id="playerPosition" placeholder="Position (e.g. Forward)">
+      <input type="number" id="playerAge" placeholder="Age">
+      <input type="text" id="playerTeam" placeholder="Team Name">
+      <button onclick="addPlayer()">Add Player</button>
+    </div>
+
+    <div class="container">
+      <h2>Teams</h2>
+      <ul id="teamList"></ul>
+      <input type="text" id="teamName" placeholder="Enter team name">
+      <button onclick="addTeam()">Add Team</button>
+    </div>
+
+    <div class="container">
+      <h2>Match Schedule</h2>
+      <ul id="matchList"></ul>
+      <input type="text" id="teamA" placeholder="Team A">
+      <input type="text" id="teamB" placeholder="Team B">
+      <input type="text" id="score" placeholder="Score (e.g. 2-1)">
+      <button onclick="addMatch()">Add Match</button>
+    </div>
+  </div>
+
+  <script>
+    // --- LOGIN SYSTEM ---
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("loginMessage");
+
+      if (username === "admin" && password === "1234") {
+        localStorage.setItem("loggedIn", "true");
+        showDashboard();
+      } else {
+        message.textContent = "Invalid username or password!";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      document.getElementById("dashboardPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+    }
+
+    function showDashboard() {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("dashboardPage").classList.remove("hidden");
+      showPlayers();
+      showTeams();
+      showMatches();
+    }
+
+    // --- AUTO LOGIN STATE ---
+    window.onload = function () {
+      if (localStorage.getItem("loggedIn") === "true") {
+        showDashboard();
+      }
+    };
+
+    // --- PLAYER MANAGEMENT ---
+    let players = JSON.parse(localStorage.getItem("players")) || [];
+
+    function addPlayer() {
+      const name = document.getElementById("playerName").value;
+      const position = document.getElementById("playerPosition").value;
+      const age = document.getElementById("playerAge").value;
+      const team = document.getElementById("playerTeam").value;
+
+      if (name && position && age && team) {
+        players.push({ name, position, age, team });
+        localStorage.setItem("players", JSON.stringify(players));
+        document.getElementById("playerName").value = "";
+        document.getElementById("playerPosition").value = "";
+        document.getElementById("playerAge").value = "";
+        document.getElementById("playerTeam").value = "";
+        showPlayers();
+      } else {
+        alert("Please fill all player details!");
+      }
+    }
+
+    function showPlayers() {
+      const list = document.getElementById("playerList");
+      list.innerHTML = "";
+      players.forEach((p, i) => {
+        list.innerHTML += `<li>${p.name} (${p.position}, ${p.age}yrs, ${p.team})
+          <button onclick="removePlayer(${i})">Remove</button></li>`;
+      });
+    }
+
+    function removePlayer(i) {
+      players.splice(i, 1);
+      localStorage.setItem("players", JSON.stringify(players));
+      showPlayers();
+    }
+
+    // --- TEAM MANAGEMENT ---
+    let teams = JSON.parse(localStorage.getItem("teams")) || [];
+
+    function addTeam() {
+      const teamName = document.getElementById("teamName").value;
+      if (teamName.trim() !== "") {
+        teams.push(teamName);
+        localStorage.setItem("teams", JSON.stringify(teams));
+        document.getElementById("teamName").value = "";
+        showTeams();
+      }
+    }
+
+    function showTeams() {
+      const list = document.getElementById("teamList");
+      list.innerHTML = "";
+      teams.forEach((t, i) => {
+        list.innerHTML += `<li>${t} <button onclick="removeTeam(${i})">Remove</button></li>`;
+      });
+    }
+
+    function removeTeam(i) {
+      teams.splice(i, 1);
+      localStorage.setItem("teams", JSON.stringify(teams));
+      showTeams();
+    }
+
+    // --- MATCH MANAGEMENT ---
+    let matches = JSON.parse(localStorage.getItem("matches")) || [];
+
+    function addMatch() {
+      const teamA = document.getElementById("teamA").value;
+      const teamB = document.getElementById("teamB").value;
+      const score = document.getElementById("score").value;
+
+      if (teamA && teamB && score) {
+        matches.push({ teamA, teamB, score });
+        localStorage.setItem("matches", JSON.stringify(matches));
+        document.getElementById("teamA").value = "";
+        document.getElementById("teamB").value = "";
+        document.getElementById("score").value = "";
+        showMatches();
+      } else {
+        alert("Please fill all match details!");
+      }
+    }
+
+    function showMatches() {
+      const list = document.getElementById("matchList");
+      list.innerHTML = "";
+      matches.forEach((m, i) => {
+        list.innerHTML += `<li>${m.teamA} vs ${m.teamB} — Score: ${m.score}
+          <button onclick="removeMatch(${i})">Remove</button></li>`;
+      });
+    }
+
+    function removeMatch(i) {
+      matches.splice(i, 1);
+      localStorage.setItem("matches", JSON.stringify(matches));
+      showMatches();
+    }
+  </script>
+</body>
+</html>
