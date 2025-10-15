@@ -3,27 +3,28 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Football Club Dashboard — Modern</title>
+<title>Wandoo United FC — Dashboard</title>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
   :root{
-    --bg:#0f1724;
-    --card:#0b1220;
-    --glass: rgba(255,255,255,0.04);
+    --bg:#071226;
+    --card:#081426;
+    --glass: rgba(255,255,255,0.03);
     --accent:#00d084;
     --accent2:#2dd4bf;
     --muted:#9aa4b2;
     --danger:#ff6b6b;
-    --glass-2: rgba(255,255,255,0.03);
+    --glass-2: rgba(255,255,255,0.02);
+    --text:#e6eef6;
   }
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:
-    radial-gradient(1200px 600px at 10% 10%, rgba(34,197,94,0.06), transparent 8%),
-    radial-gradient(1000px 400px at 90% 90%, rgba(45,212,191,0.04), transparent 12%),
-    var(--bg);color:#e6eef6;-webkit-font-smoothing:antialiased}
+    radial-gradient(1200px 600px at 10% 10%, rgba(34,197,94,0.04), transparent 8%),
+    radial-gradient(1000px 400px at 90% 90%, rgba(45,212,191,0.03), transparent 12%),
+    var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
   header{padding:18px;display:flex;align-items:center;gap:12px;max-width:1100px;margin:12px auto}
   .logo-box{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#042; font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,0.6)}
   h1{margin:0;font-size:18px}
@@ -40,7 +41,7 @@
   .who p{margin:0;color:var(--muted);font-size:13px}
 
   .sidebar .nav{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-  .nav button{background:transparent;color:#d8eef7;border:0;padding:10px 12px;border-radius:8px;text-align:left;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px}
+  .nav button{background:transparent;color:var(--text);border:0;padding:10px 12px;border-radius:8px;text-align:left;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px}
   .nav button.active{background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));box-shadow: inset 0 1px 0 rgba(255,255,255,0.02)}
   .small{font-size:13px;color:var(--muted)}
 
@@ -49,27 +50,24 @@
   .cards{display:flex;gap:12px;flex-wrap:wrap}
   .card{flex:1;min-width:180px;background:linear-gradient(180deg,var(--glass),var(--glass-2));padding:14px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.5)}
   .card h4{margin:0;font-size:13px;color:var(--muted)}
-  .card .big{font-size:22px;margin-top:8px;color:#fff;font-weight:700}
+  .card .big{font-size:22px;margin-top:8px;color:var(--text);font-weight:700}
 
   .grid{display:grid;grid-template-columns:1fr 360px;gap:12px}
   .panel{background:linear-gradient(180deg,var(--glass),rgba(255,255,255,0.01));padding:14px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.45)}
   .flex{display:flex;gap:8px;align-items:center}
   table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px;color:#eaf6f0}
+  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px;color:var(--text)}
   th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:12px}
   .btn{padding:8px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#042;cursor:pointer;font-weight:600}
   .btn.ghost{background:transparent;color:#cfeee4;border:1px solid rgba(255,255,255,0.03)}
   .btn.danger{background:linear-gradient(90deg,var(--danger),#ff8474);color:#fff}
-
-  input, select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#eaf6f0}
+  input, select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)}
   .muted{color:var(--muted)}
 
   /* toast */
   #toast{position:fixed;right:18px;bottom:18px;background:rgba(2,6,23,0.9);color:#dffaf0;padding:10px 14px;border-radius:10px;box-shadow:0 8px 30px rgba(2,6,23,0.6);display:none;align-items:center;gap:8px}
   #toast.play{display:flex;animation:toastIn .35s ease}
   @keyframes toastIn{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
-
-  /* responsive */
   @media (max-width:980px){
     .wrap{grid-template-columns:1fr; padding-bottom:60px}
     .grid{grid-template-columns:1fr}
@@ -78,9 +76,8 @@
   .uploader{display:flex;gap:8px;align-items:center}
   .logo-preview{width:56px;height:56px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center}
   .logo-preview img{width:100%;height:100%;object-fit:cover}
-
   .chart-wrap{height:220px;display:flex;align-items:center}
-  .pill{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-weight:600;color:#eaf6f0}
+  .pill{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-weight:600;color:var(--text)}
   .toast-sound{display:none}
 </style>
 </head>
@@ -89,14 +86,14 @@
 <header>
   <div style="max-width:1100px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between">
     <div style="display:flex;gap:12px;align-items:center">
-      <div class="logo-box">FC</div>
+      <div class="logo-box">WU</div>
       <div>
-        <h1>Football Club Dashboard</h1>
+        <h1>Wandoo United FC</h1>
         <div class="sub">Modern dashboard — demo (client-side)</div>
       </div>
     </div>
     <div style="display:flex;gap:10px;align-items:center">
-      <div id="topRole" class="pill">Guest</div>
+      <div id="topRole" class="pill">GUEST</div>
       <div id="topUser" class="small muted">Not signed in</div>
     </div>
   </div>
@@ -107,8 +104,7 @@
   <aside class="sidebar">
     <div class="profile">
       <div class="avatar" id="logoAvatar" title="Team logo">
-        <!-- logo image injected -->
-        <span id="avatarInitials" style="font-weight:700;color:#042">FC</span>
+        <span id="avatarInitials" style="font-weight:700;color:#042">WU</span>
       </div>
       <div class="who">
         <h3 id="userName">Guest</h3>
@@ -136,7 +132,7 @@
         <button class="btn" id="loginOpenBtn">Sign in</button>
         <button class="btn ghost" id="logoutBtn" style="display:none">Sign out</button>
       </div>
-      <p class="small muted" style="margin-top:8px">Demo users: admin/1234 • manager/2345 • viewer/3456</p>
+      <p class="small muted" style="margin-top:8px">Demo users: admin/1234 • manager/5678 • viewer/0000</p>
     </div>
   </aside>
 
@@ -232,7 +228,7 @@
 
         <!-- SETTINGS -->
         <div id="section-settings" class="panel" style="display:none">
-          <h3>Settings</h3>
+          <h3>Settings & Export</h3>
           <div class="muted small">Local demo settings — for production move to a secure backend</div>
           <div style="margin-top:10px">
             <label class="small muted">Stored Data</label>
@@ -242,6 +238,10 @@
               <button class="btn danger" id="clearBtn">Clear all</button>
             </div>
             <input type="file" id="importFile" accept="application/json" style="display:none" />
+            <div style="margin-top:12px">
+              <button class="btn ghost" id="exportReadmeBtn">Export README</button>
+              <div class="muted small" style="margin-top:8px">Click "Export README" to download a short README explaining how to paste this file to GitHub and a suggested commit message.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -289,8 +289,7 @@
         </div>
       </aside>
     </div>
-  </div>
-</section>
+  </section>
 </main>
 
 <div id="toast"><span id="toastText"></span></div>
@@ -302,22 +301,26 @@
 
 <script>
 /* ===========================
-   Single-file Modern Dashboard
+   Wandoo United FC — Single-file Modern Dashboard
    Client-side only demo (localStorage)
+   Includes:
+   - Sample full team (11 players)
+   - Demo credentials: admin/1234, manager/5678, viewer/0000
+   - Chart.js, logo upload, toasts, sounds, export README
    =========================== */
 
 const DEMO_USERS = [
   { username: 'admin', password: '1234', role: 'admin' },
-  { username: 'manager', password: '2345', role: 'manager' },
-  { username: 'viewer', password: '3456', role: 'viewer' }
+  { username: 'manager', password: '5678', role: 'manager' },
+  { username: 'viewer', password: '0000', role: 'viewer' }
 ];
 
 const STORAGE_KEYS = {
-  players: 'fc_players_v2',
-  matches: 'fc_matches_v2',
-  user: 'fc_user_v2',
-  pom: 'fc_pom_v2',
-  logo: 'fc_logo_v2'
+  players: 'wu_players_v1',
+  matches: 'wu_matches_v1',
+  user: 'wu_user_v1',
+  pom: 'wu_pom_v1',
+  logo: 'wu_logo_v1'
 };
 
 // Utilities
@@ -357,23 +360,43 @@ function toast(msg){
 function load(key, fallback){ try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback } catch(e){ return fallback } }
 function save(key, val){ localStorage.setItem(key, JSON.stringify(val)) }
 
-// Initial data
-let players = load(STORAGE_KEYS.players, [
-  { id: uid(), name: "John Kamau", position: "Striker", age: 22, goals: 8 },
-  { id: uid(), name: "Peter Otieno", position: "Goalkeeper", age: 25, goals: 0 },
-  { id: uid(), name: "Alex Wekesa", position: "Midfielder", age: 23, goals: 3 }
-]);
-let matches = load(STORAGE_KEYS.matches, [
-  { id: uid(), date: "2025-10-20", teamA: "Red Lions", teamB: "Blue Sharks", score: "-" },
-  { id: uid(), date: "2025-10-27", teamA: "Blue Sharks", teamB: "Green Eagles", score: "-" }
-]);
+// Sample full team (11 players) - only used if localStorage empty
+const samplePlayers = [
+  { name: "Mark Njoroge", position: "Goalkeeper", age: 28, goals: 0 },
+  { name: "Samuel Otieno", position: "Right Back", age: 24, goals: 1 },
+  { name: "Michael Kiptoo", position: "Left Back", age: 26, goals: 2 },
+  { name: "David Mwangi", position: "Center Back", age: 30, goals: 0 },
+  { name: "Brian Ouma", position: "Center Back", age: 27, goals: 1 },
+  { name: "Kevin Wambua", position: "Defensive Midfielder", age: 25, goals: 2 },
+  { name: "Alex Wekesa", position: "Midfielder", age: 23, goals: 3 },
+  { name: "John Kamau", position: "Right Winger", age: 22, goals: 8 },
+  { name: "Peter Otieno", position: "Left Winger", age: 25, goals: 4 },
+  { name: "Patrick Osei", position: "Striker", age: 24, goals: 10 },
+  { name: "Felix Awuor", position: "Striker", age: 29, goals: 6 }
+];
+
+const sampleMatches = [
+  { date: "2025-10-01", teamA: "Wandoo United", teamB: "Red Lions", score: "2-1" },
+  { date: "2025-10-08", teamA: "Wandoo United", teamB: "Blue Sharks", score: "1-1" },
+  { date: "2025-10-15", teamA: "Green Eagles", teamB: "Wandoo United", score: "0-3" }
+];
+
+// Initial data (load or seed)
+let players = load(STORAGE_KEYS.players, null);
+if (!players) {
+  players = samplePlayers.map(p => ({ id: uid(), name: p.name, position: p.position, age: p.age, goals: p.goals }));
+  save(STORAGE_KEYS.players, players);
+}
+let matches = load(STORAGE_KEYS.matches, null);
+if (!matches) {
+  matches = sampleMatches.map(m => ({ id: uid(), date: m.date, teamA: m.teamA, teamB: m.teamB, score: m.score }));
+  save(STORAGE_KEYS.matches, matches);
+}
 let currentUser = load(STORAGE_KEYS.user, { username: 'Guest', role: 'viewer' });
 let POM = localStorage.getItem(STORAGE_KEYS.pom) || null;
 let teamLogo = localStorage.getItem(STORAGE_KEYS.logo) || null;
 
-/* ========= UI elements ========= */
-const sections = document.querySelectorAll('[data-section], #section-dashboard, #section-players, #section-matches, #section-settings');
-const navButtons = document.querySelectorAll('.nav button');
+/* ========= UI elements & init ========= */
 const topUser = document.getElementById('topUser');
 const topRole = document.getElementById('topRole');
 const userNameEl = document.getElementById('userName');
@@ -392,7 +415,6 @@ document.querySelectorAll('.nav button').forEach(btn=>{
   });
 });
 function showSection(name){
-  // hide all
   ['dashboard','players','matches','settings'].forEach(k=>{
     document.getElementById('section-' + k).style.display = 'none';
   });
@@ -405,24 +427,15 @@ function refreshAuthUI(){
   document.getElementById('signedRole').textContent = currentUser.role || 'viewer';
   topUser.textContent = currentUser.username || 'Guest';
   topRole.textContent = (currentUser.role || 'viewer').toUpperCase();
-
   userNameEl.textContent = currentUser.username === 'Guest' ? 'Guest' : currentUser.username;
   userRoleEl.textContent = 'Role: ' + (currentUser.role || 'viewer');
-
-  // show/hide login controls
   const logged = currentUser && currentUser.username && currentUser.username !== 'Guest';
   document.getElementById('loginForm').style.display = logged ? 'none' : 'block';
   document.getElementById('loggedBox').style.display = logged ? 'block' : 'none';
   document.getElementById('logoutBtn').style.display = logged ? 'inline-block' : 'none';
   document.getElementById('logoutBtn2').style.display = logged ? 'inline-block' : 'none';
-
-  // role-based UI changes
   const canAdd = ['admin','manager'].includes(currentUser.role);
-  const canDelete = currentUser.role === 'admin';
   document.getElementById('addPlayerWrap').style.display = canAdd ? 'block' : 'none';
-  document.getElementById('addMatchWrap').style.display = canAdd ? 'block' : 'none';
-  document.getElementById('addMatchWrap').style.display = canAdd ? 'none' : 'none'; // hidden until toggled
-  // delete button rendered conditionally during renderPlayers
   save(STORAGE_KEYS.user, currentUser);
 }
 
@@ -486,7 +499,6 @@ function renderLogo(){
   }
   avatarInitials.style.display = 'none';
   logoPreview.innerHTML = '<img src="'+teamLogo+'" alt="logo">';
-  // also set avatar in top-left
   logoAvatar.innerHTML = '<img src="'+teamLogo+'" alt="logo">';
 }
 
@@ -506,7 +518,6 @@ function renderPlayers(filter=''){
     tr.insertCell().textContent = p.age;
     tr.insertCell().textContent = p.goals;
     const actionCell = tr.insertCell();
-    // Actions: delete (admin only)
     if (role === 'admin'){
       const del = document.createElement('button'); del.className='btn danger'; del.textContent='Delete';
       del.addEventListener('click', ()=> {
@@ -598,12 +609,12 @@ document.getElementById('addMatchBtn').addEventListener('click', ()=>{
   toast('Match added');
 });
 
-/* ===== Settings: export/import/clear ===== */
+/* ===== Settings: export/import/clear & export README ===== */
 document.getElementById('exportBtn').addEventListener('click', ()=>{
   const data = { players, matches, pom: POM, user: currentUser, logo: teamLogo };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'fc-export.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  const a = document.createElement('a'); a.href = url; a.download = 'wandoo-united-export.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 });
 document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change', (e)=>{
@@ -629,6 +640,49 @@ document.getElementById('clearBtn').addEventListener('click', ()=>{
   renderLogo(); refreshAuthUI(); renderAll(); toast('Cleared');
 });
 
+// Export README file (short)
+document.getElementById('exportReadmeBtn').addEventListener('click', ()=>{
+  const readme = `# Wandoo United FC — Football Club Management System (Single-file)
+
+This repository contains a single file: \`index.html\`, a modern dashboard-style football club management demo that runs entirely in the browser (no backend required).
+
+## Features
+- Modern dashboard UI (charts, cards)
+- Admin / Manager / Viewer roles (client-side demo)
+- Player CRUD (add, delete — role-based)
+- Match schedule + update scores
+- Player of the Month selection
+- Upload team logo (stored in browser)
+- Toast notifications and subtle sound effects
+- Data persistence via localStorage
+- Export/import JSON and export README buttons
+
+## How to install (on GitHub)
+1. Create or open repository (e.g. \`football-club-system\`).
+2. Add a file named \`index.html\`.
+3. Paste the entire HTML from this file into \`index.html\`.
+4. Commit with message:
+   \`Added Wandoo United FC dashboard version\`
+5. Visit:
+   \`https://<your-username>.github.io/football-club-system/\`
+
+## Demo users (client-only)
+- admin / 1234 — full access
+- manager / 5678 — add players, edit matches (no delete)
+- viewer / 0000 — read-only
+
+## Notes
+- This is a client-side demo. For production, move authentication and storage to a secure backend.
+- You can export data (JSON) and import it on another device.
+
+Enjoy — Wandoo United FC!`;
+
+  const blob = new Blob([readme], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'README-Wandoo-United-FC.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  toast('README exported');
+});
+
 /* ===== POM selection ===== */
 function renderPOMList(){
   const el = document.getElementById('pomList'); el.innerHTML = '';
@@ -649,11 +703,6 @@ document.getElementById('autoPOM').addEventListener('click', ()=> {
 document.getElementById('clearPOM').addEventListener('click', ()=> { POM = null; localStorage.removeItem(STORAGE_KEYS.pom); renderAll(); toast('POM cleared'); });
 document.getElementById('autoPomBtn').addEventListener('click', ()=> document.getElementById('autoPOM').click());
 document.getElementById('clearPomBtn').addEventListener('click', ()=> document.getElementById('clearPOM').click());
-
-/* ===== small utilities ===== */
-document.getElementById('showToastDemo').addEventListener('click', ()=> toast('This is a demo toast'));
-document.getElementById('refreshAll').addEventListener('click', ()=> renderAll());
-document.getElementById('fillDemoBtn').addEventListener('click', ()=> { document.getElementById('loginUser').value='admin'; document.getElementById('loginPass').value='1234'; });
 
 /* ===== Chart.js for goals per player ===== */
 let chart = null;
@@ -686,27 +735,19 @@ function renderAll(){
   const totalGoals = players.reduce((s,p)=>s + Number(p.goals||0),0);
   document.getElementById('cardGoals').textContent = totalGoals;
   document.getElementById('cardPOM').textContent = POM || '—';
-  document.getElementById('statPOM'); // no-op placeholder
   renderLogo();
   refreshAuthUI();
 }
 
 /* Boot */
 (function boot(){
-  // Ensure POM loaded
   if (localStorage.getItem(STORAGE_KEYS.pom)) POM = localStorage.getItem(STORAGE_KEYS.pom);
   if (localStorage.getItem(STORAGE_KEYS.logo)) teamLogo = localStorage.getItem(STORAGE_KEYS.logo);
   refreshAuthUI();
   renderAll();
-  // attach more UI handlers
-  document.getElementById('loginOpenBtn').addEventListener('click', ()=> {
-    document.querySelector('html,body').scrollTop = 0;
-    document.getElementById('loginUser').focus();
-  });
-  // Nav default
+  document.getElementById('loginOpenBtn').addEventListener('click', ()=> { document.querySelector('html,body').scrollTop = 0; document.getElementById('loginUser').focus(); });
   showSection('dashboard');
 })();
-
 </script>
 </body>
-</html>
+        </html>
