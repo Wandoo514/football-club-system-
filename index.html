@@ -5,77 +5,72 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manchester United FC - Club Management</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:Arial,sans-serif;background:#f5f5f5;overflow-x:hidden;}
-nav{display:flex;background:#a50000;color:#fff;padding:10px 20px;align-items:center;flex-wrap:wrap;}
-nav a{color:#fff;text-decoration:none;margin-right:20px;font-weight:bold;}
-nav a:hover{text-decoration:underline;}
-#hero{display:flex;flex-direction:row;align-items:center;justify-content:space-between;padding:50px 20px;background:#ff0000;overflow:hidden;flex-wrap:wrap;color:#fff;}
-#hero-text{max-width:50%;}
-#hero-text h1{font-size:3em;background:linear-gradient(to right,#fff, #ffd700);-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
-#hero-text p{font-size:1.2em;margin-bottom:20px;}
-#hero-text button{padding:10px 20px;margin-right:10px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;}
-#get-started{background:#ffd700;color:#a50000;}
-#view-demo{background:#fff;color:#a50000;}
-#hero-image{max-width:45%;animation: float 3s ease-in-out infinite alternate;}
-@keyframes float{0%{transform:translateY(0px);}100%{transform:translateY(-20px);}}
-#features{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;}
-.feature-card{background:#fff;padding:20px;border-radius:10px;width:250px;box-shadow:0 2px 10px rgba(0,0,0,0.1);opacity:0;transform:translateX(-50px);transition:all 0.5s ease;}
-.feature-card.visible{opacity:1;transform:translateX(0);}
-.feature-card:hover{transform:translateY(-10px);box-shadow:0 4px 15px rgba(0,0,0,0.2);}
-main{display:flex;flex-wrap:wrap;justify-content:center;padding:20px;gap:20px;}
-.card{background:#fff;border-radius:10px;padding:15px;width:250px;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
-.card h3{margin-bottom:5px;color:#a50000;}
-.card p{margin-bottom:5px;}
-.card button{margin-top:5px;padding:5px 10px;border:none;border-radius:5px;background:#a50000;color:#fff;cursor:pointer;}
-#music-player{position:fixed;bottom:20px;left:20px;background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.3);z-index:100;width:300px;}
-#music-toggle{display:inline-block;margin-top:10px;padding:5px 10px;background:#a50000;color:#fff;border:none;border-radius:5px;cursor:pointer;}
-h2{text-align:center;margin-bottom:20px;color:#a50000;}
-ul{list-style:none;padding:0;max-height:150px;overflow-y:auto;}
-li{padding:10px;margin:5px 0;background:#eee;border-radius:5px;cursor:pointer;}
-li:hover{background:#ddd;}
-audio{width:100%;margin-top:10px;display:block;}
-#match-form input,#match-form button,#player-form input,#player-form select,#simulate-form input,#simulate-form button{padding:5px;margin:5px;border-radius:5px;border:1px solid #ccc;}
-#match-table,#dashboard-table,#live-match-table{width:90%;margin:20px auto;border-collapse:collapse;}
-#match-table th,#match-table td,#dashboard-table th,#dashboard-table td,#live-match-table th,#live-match-table td{border:1px solid #ccc;padding:10px;text-align:center;}
-#live-match{background:#fff;padding:15px;border-radius:10px;width:90%;margin:20px auto;box-shadow:0 2px 10px rgba(0,0,0,0.2);}
+/* ===== Body & Global ===== */
+body{margin:0;font-family:'Arial',sans-serif;background:#1b1b1b;color:#fff;}
+a{text-decoration:none;}
+button{cursor:pointer;}
+section{padding:20px;}
+h2{color:#00b14f;text-align:center;margin-bottom:15px;}
+
+/* ===== Navigation ===== */
+nav{display:flex;justify-content:space-around;align-items:center;background:#111;padding:15px;position:sticky;top:0;z-index:1000;}
+nav a{color:#fff;font-weight:bold;padding:10px 15px;border-radius:5px;transition:0.3s;}
+nav a:hover{background:#00b14f;color:#000;}
+
+/* ===== Hero ===== */
+#hero{background:linear-gradient(90deg,#111,#00b14f);padding:50px;text-align:center;}
+#hero h1{font-size:3em;color:#ffd700;margin-bottom:10px;}
+#hero p{font-size:1.2em;margin-bottom:20px;}
+#hero button{background:#ffd700;color:#111;padding:10px 25px;margin:10px;border:none;border-radius:5px;font-weight:bold;transition:0.3s;}
+#hero button:hover{background:#00b14f;color:#fff;}
+
+/* ===== Cards ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;}
+.card{background:#222;border-radius:10px;padding:15px;box-shadow:0 2px 8px rgba(0,0,0,0.5);transition:0.3s;}
+.card:hover{box-shadow:0 4px 15px rgba(0,0,0,0.7);}
+.card h3{margin-bottom:5px;color:#ffd700;}
+.card p{margin-bottom:5px;font-size:0.9em;}
+.card button{margin-top:10px;padding:8px 15px;border:none;border-radius:5px;background:#00b14f;color:#fff;font-weight:bold;transition:0.3s;}
+.card button:hover{background:#ffd700;color:#111;}
+
+/* ===== Tables ===== */
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+th,td{padding:8px;text-align:center;border-bottom:1px solid #333;}
+th{background:#111;color:#00b14f;}
+
+/* ===== Live Match ===== */
+#live-match{background:#111;border:1px solid #00b14f;border-radius:10px;padding:15px;margin-top:20px;}
+#event-log{max-height:200px;overflow-y:auto;background:#222;padding:10px;border-radius:5px;}
+#event-log li{padding:5px;margin:3px 0;background:#333;border-radius:3px;}
+
+/* ===== Music Player ===== */
+#music-player{position:fixed;bottom:20px;right:20px;background:#222;padding:15px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.5);width:300px;}
+#music-player h2{color:#00b14f;margin-bottom:10px;}
+#playlist li{cursor:pointer;padding:5px;margin:3px 0;background:#333;border-radius:5px;}
+#playlist li:hover{background:#00b14f;color:#000;}
 </style>
 </head>
 <body>
 
+<!-- ===== Navigation ===== -->
 <nav>
   <a href="#hero">Home</a>
-  <a href="#features">Features</a>
   <a href="#players">Players</a>
   <a href="#matches">Matches</a>
+  <a href="#live-match">Live</a>
   <a href="#dashboard">Dashboard</a>
   <a href="#music-player">Music</a>
 </nav>
 
+<!-- ===== Hero ===== -->
 <section id="hero">
-  <div id="hero-text">
-    <h1>Manchester United FC</h1>
-    <p>Manage your legendary club with stats, live matches, player transfers, and iconic music!</p>
-    <button id="get-started">Get Started</button>
-    <button id="view-demo">View Demo</button>
-  </div>
-  <div id="hero-image">
-    <svg width="300" height="200" viewBox="0 0 300 200">
-      <rect x="0" y="0" width="300" height="200" fill="#ffd700" stroke="#a50000" stroke-width="3"/>
-      <circle cx="150" cy="100" r="20" stroke="#a50000" stroke-width="3" fill="none"/>
-      <line x1="150" y1="0" x2="150" y2="200" stroke="#a50000" stroke-width="2"/>
-    </svg>
-  </div>
+  <h1>Manchester United FC</h1>
+  <p>Manage your legendary club with stats, live matches, player transfers, and iconic music!</p>
+  <button id="get-started">Get Started</button>
+  <button id="view-demo">View Demo</button>
 </section>
 
-<section id="features">
-  <div class="feature-card">Dynamic Player Management</div>
-  <div class="feature-card">Match Scheduling & Results</div>
-  <div class="feature-card">Substitute Player Management</div>
-  <div class="feature-card">Stats & Analytics Dashboard</div>
-  <div class="feature-card">Live Match Simulation</div>
-</section>
-
+<!-- ===== Players ===== -->
 <section id="players">
 <h2>Players & Substitutes</h2>
 <form id="player-form">
@@ -90,9 +85,10 @@ audio{width:100%;margin-top:10px;display:block;}
   </select>
   <button type="submit">Add Player</button>
 </form>
-<main id="player-container"></main>
+<div class="cards" id="player-container"></div>
 </section>
 
+<!-- ===== Matches ===== -->
 <section id="matches">
 <h2>Club Matches</h2>
 <form id="match-form">
@@ -101,14 +97,10 @@ audio{width:100%;margin-top:10px;display:block;}
   <input type="text" id="score" placeholder="Score" required>
   <button type="submit">Add Match</button>
 </form>
-<table id="match-table">
-  <thead>
-    <tr><th>Opponent</th><th>Date</th><th>Score</th></tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<div class="cards" id="match-cards"></div>
 </section>
 
+<!-- ===== Live Match ===== -->
 <section id="live-match">
 <h2>Live Match Simulation</h2>
 <form id="simulate-form">
@@ -117,7 +109,7 @@ audio{width:100%;margin-top:10px;display:block;}
 </form>
 <p id="match-timer">Match Time: 0'</p>
 <ul id="event-log"></ul>
-<table id="live-match-table">
+<table>
   <thead>
     <tr><th>Team</th><th>Score</th></tr>
   </thead>
@@ -128,6 +120,7 @@ audio{width:100%;margin-top:10px;display:block;}
 </table>
 </section>
 
+<!-- ===== Dashboard ===== -->
 <section id="dashboard">
 <h2>Club Dashboard</h2>
 <table id="dashboard-table">
@@ -138,6 +131,7 @@ audio{width:100%;margin-top:10px;display:block;}
 </table>
 </section>
 
+<!-- ===== Music Player ===== -->
 <div id="music-player">
   <h2>🎶 Club Anthems</h2>
   <ul id="playlist"></ul>
@@ -146,7 +140,7 @@ audio{width:100%;margin-top:10px;display:block;}
 </div>
 
 <script>
-// ======= Data =======
+// ===== Data =====
 let players=[
 {name:"David de Gea",position:"Goalkeeper",age:32,goals:0,assists:0,sub:false},
 {name:"Harry Maguire",position:"Defender",age:29,goals:2,assists:1,sub:false},
@@ -162,27 +156,20 @@ let players=[
 ];
 let matches=[];
 
-// ======= DOM =======
+// ===== DOM =====
 const playerContainer=document.getElementById('player-container');
+const matchCards=document.getElementById('match-cards');
 const dashboardTable=document.querySelector('#dashboard-table tbody');
-const matchTable=document.querySelector('#match-table tbody');
 const eventLog=document.getElementById('event-log');
 const matchTimerDisplay=document.getElementById('match-timer');
 const scoreUsDisplay=document.getElementById('score-us');
 const scoreOpponentDisplay=document.getElementById('score-opponent');
+const playlist=document.getElementById('playlist');
+const playerAudio=document.getElementById('player');
 
-// ======= Helper =======
-const createElement=(tag,opts={})=>{const el=document.createElement(tag);Object.entries(opts).forEach(([k,v])=>el[k]=v);return el;};
-
-// ======= Render =======
-function renderPlayers(){
-  playerContainer.innerHTML='';
-  players.forEach((p,i)=>{
-    const card=createElement('div',{className:'card'});
-    card.innerHTML=`<h3>${p.name}</h3>
-      <p>Position: ${p.position}</p>
-      <p>Age: ${p.age}</p>
-      <p>Goals: ${p.goals} | Assists: ${p.assists}</p>
-      <p>Status: ${p.sub?'Substitute':'Main'}</p>
-      <button data-index="${i}">Remove</button>`;
-    playerContainer.appendChild(card);
+// ===== Music =====
+let musicPlaying=true;
+const musicManifest=[
+  {title:"Glory Glory Man United",file:"music/glory_glory.mp3"},
+  {title:"We Are The Reds",file:"music/we_are_the_reds.mp3"},
+  {title:"Ole's at the Wheel
