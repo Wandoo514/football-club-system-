@@ -146,21 +146,23 @@ audio{width:100%;margin-top:10px;display:block;}
 </div>
 
 <script>
-// ===== Manchester United Squad =====
+// ======= Data =======
 let players=[
-  {name:"David de Gea",position:"Goalkeeper",age:32,goals:0,assists:0,sub:false},
-  {name:"Harry Maguire",position:"Defender",age:29,goals:2,assists:1,sub:false},
-  {name:"Raphaël Varane",position:"Defender",age:30,goals:1,assists:0,sub:false},
-  {name:"Luke Shaw",position:"Defender",age:27,goals:1,assists:3,sub:false},
-  {name:"Bruno Fernandes",position:"Midfielder",age:27,goals:15,assists:12,sub:false},
-  {name:"Casemiro",position:"Midfielder",age:30,goals:4,assists:3,sub:false},
-  {name:"Marcus Rashford",position:"Forward",age:25,goals:12,assists:7,sub:false},
-  {name:"Anthony Martial",position:"Forward",age:27,goals:8,assists:5,sub:true},
-  {name:"Jadon Sancho",position:"Forward",age:23,goals:6,assists:7,sub:true},
-  {name:"Fred",position:"Midfielder",age:28,goals:2,assists:4,sub:true},
-  {name:"Dean Henderson",position:"Goalkeeper",age:26,goals:0,assists:0,sub:true}
+{name:"David de Gea",position:"Goalkeeper",age:32,goals:0,assists:0,sub:false},
+{name:"Harry Maguire",position:"Defender",age:29,goals:2,assists:1,sub:false},
+{name:"Raphaël Varane",position:"Defender",age:30,goals:1,assists:0,sub:false},
+{name:"Luke Shaw",position:"Defender",age:27,goals:1,assists:3,sub:false},
+{name:"Bruno Fernandes",position:"Midfielder",age:27,goals:15,assists:12,sub:false},
+{name:"Casemiro",position:"Midfielder",age:30,goals:4,assists:3,sub:false},
+{name:"Marcus Rashford",position:"Forward",age:25,goals:12,assists:7,sub:false},
+{name:"Anthony Martial",position:"Forward",age:27,goals:8,assists:5,sub:true},
+{name:"Jadon Sancho",position:"Forward",age:23,goals:6,assists:7,sub:true},
+{name:"Fred",position:"Midfielder",age:28,goals:2,assists:4,sub:true},
+{name:"Dean Henderson",position:"Goalkeeper",age:26,goals:0,assists:0,sub:true}
 ];
+let matches=[];
 
+// ======= DOM =======
 const playerContainer=document.getElementById('player-container');
 const dashboardTable=document.querySelector('#dashboard-table tbody');
 const matchTable=document.querySelector('#match-table tbody');
@@ -168,185 +170,19 @@ const eventLog=document.getElementById('event-log');
 const matchTimerDisplay=document.getElementById('match-timer');
 const scoreUsDisplay=document.getElementById('score-us');
 const scoreOpponentDisplay=document.getElementById('score-opponent');
-let matches=[];
 
-// ===== Player Rendering =====
+// ======= Helper =======
+const createElement=(tag,opts={})=>{const el=document.createElement(tag);Object.entries(opts).forEach(([k,v])=>el[k]=v);return el;};
+
+// ======= Render =======
 function renderPlayers(){
   playerContainer.innerHTML='';
   players.forEach((p,i)=>{
-    const card=document.createElement('div');
-    card.className='card';
+    const card=createElement('div',{className:'card'});
     card.innerHTML=`<h3>${p.name}</h3>
-                    <p>Position: ${p.position}</p>
-                    <p>Age: ${p.age}</p>
-                    <p>Goals: ${p.goals} | Assists: ${p.assists}</p>
-                    <p>Status: ${p.sub?'Substitute':'Main'}</p>
-                    <button onclick="removePlayer(${i})">Remove</button>`;
+      <p>Position: ${p.position}</p>
+      <p>Age: ${p.age}</p>
+      <p>Goals: ${p.goals} | Assists: ${p.assists}</p>
+      <p>Status: ${p.sub?'Substitute':'Main'}</p>
+      <button data-index="${i}">Remove</button>`;
     playerContainer.appendChild(card);
-  });
-  renderDashboard();
-}
-
-function removePlayer(index){
-  if(confirm(`Remove ${players[index].name}?`)){
-    players.splice(index,1);
-    renderPlayers();
-  }
-}
-
-document.getElementById('player-form').addEventListener('submit',e=>{
-  e.preventDefault();
-  const name=document.getElementById('player-name').value;
-  const position=document.getElementById('player-position').value;
-  const age=parseInt(document.getElementById('player-age').value);
-  const goals=parseInt(document.getElementById('player-goals').value);
-  const assists=parseInt(document.getElementById('player-assists').value);
-  const sub=document.getElementById('player-sub').value==='true';
-  players.push({name,position,age,goals,assists,sub});
-  renderPlayers();
-  e.target.reset();
-});
-
-function renderDashboard(highlight=false){
-  dashboardTable.innerHTML='';
-  const maxGoals=Math.max(...players.map(p=>p.goals));
-  const maxAssists=Math.max(...players.map(p=>p.assists));
-  players.forEach(p=>{
-    const row=document.createElement('tr');
-    let style='';
-    if(highlight){
-      if(p.goals===maxGoals) style+='background:#ffeaa7;';
-      if(p.assists===maxAssists) style+='background:#dff9fb;';
-    }
-    row.innerHTML=`<td>${p.name}</td><td>${p.goals}</td><td>${p.assists}</td><td>${p.sub?'Substitute':'Main'}</td>`;
-    row.style.cssText=style;
-    dashboardTable.appendChild(row);
-  });
-}
-
-renderPlayers();
-
-// ===== Matches Management =====
-document.getElementById('match-form').addEventListener('submit',e=>{
-  e.preventDefault();
-  const opponent=document.getElementById('opponent').value;
-  const date=document.getElementById('date').value;
-  const score=document.getElementById('score').value;
-  matches.push({opponent,date,score});
-  const row=document.createElement('tr');
-  row.innerHTML=`<td>${opponent}</td><td>${date}</td><td>${score}</td>`;
-  matchTable.appendChild(row);
-  e.target.reset();
-});
-
-// ===== Music Player Auto-Play =====
-const playlist=document.getElementById('playlist');
-const playerAudio=document.getElementById('player');
-let musicPlaying=true;
-const musicManifest=[
-  {title:"Glory Glory Man United",artist:"Manchester United Choir",file:"music/glory_glory.mp3"},
-  {title:"We Are The Reds",artist:"Fan Anthem",file:"music/we_are_the_reds.mp3"},
-  {title:"Ole's at the Wheel",artist:"Fan Chant",file:"music/oles_at_the_wheel.mp3"}
-];
-
-musicManifest.forEach((song,index)=>{
-  const li=document.createElement('li');
-  li.textContent=`${song.title} - ${song.artist}`;
-  li.addEventListener('click',()=>{
-    playerAudio.src=song.file;
-    playerAudio.play();
-    musicPlaying=true;
-  });
-  playlist.appendChild(li);
-
-  if(index===0){ // Auto-play first song
-    playerAudio.src=song.file;
-    playerAudio.autoplay=true;
-    playerAudio.loop=true;
-    playerAudio.muted=true;
-    playerAudio.play().then(()=>{playerAudio.muted=false;}).catch(()=>{});
-  }
-});
-
-document.getElementById('music-toggle').addEventListener('click',()=>{
-  if(musicPlaying){playerAudio.pause();musicPlaying=false;}
-  else{playerAudio.play();musicPlaying=true;}
-});
-
-// ===== Feature Card Animation =====
-const featureCards=document.querySelectorAll('.feature-card');
-window.addEventListener('scroll',()=>{
-  featureCards.forEach(card=>{
-    const rect=card.getBoundingClientRect();
-    if(rect.top<window.innerHeight-50) card.classList.add('visible');
-  });
-});
-
-// ===== Smooth Scroll =====
-document.querySelectorAll('nav a').forEach(link=>{
-  link.addEventListener('click',e=>{
-    e.preventDefault();
-    const target=document.querySelector(link.getAttribute('href'));
-    target.scrollIntoView({behavior:'smooth'});
-  });
-});
-
-// ===== Live Match Simulation =====
-const simulateForm=document.getElementById('simulate-form');
-simulateForm.addEventListener('submit',e=>{
-  e.preventDefault();
-  startMatch(document.getElementById('sim-opponent').value);
-});
-
-function startMatch(opponent){
-  let matchTime=0;
-  let scoreUs=0;
-  let scoreOpponent=0;
-  eventLog.innerHTML='';
-  scoreUsDisplay.textContent=0;
-  scoreOpponentDisplay.textContent=0;
-
-  const interval=setInterval(()=>{
-    matchTime++;
-    matchTimerDisplay.textContent=`Match Time: ${matchTime}'`;
-
-    if(Math.random()<0.3){
-      const mainPlayers=players.filter(p=>!p.sub);
-      const scorer=mainPlayers[Math.floor(Math.random()*mainPlayers.length)];
-      const assister=mainPlayers[Math.floor(Math.random()*mainPlayers.length)];
-      scorer.goals++;
-      assister.assists++;
-      scoreUs++;
-      const li=document.createElement('li');
-      li.textContent=`GOAL! ${scorer.name} scores (assisted by ${assister.name})!`;
-      eventLog.appendChild(li);
-      scoreUsDisplay.textContent=scoreUs;
-      renderDashboard(true);
-    }
-
-    if(Math.random()<0.1){
-      scoreOpponent++;
-      const li=document.createElement('li');
-      li.textContent=`Opponent scores!`;
-      eventLog.appendChild(li);
-      scoreOpponentDisplay.textContent=scoreOpponent;
-    }
-
-    if(Math.random()<0.05){
-      const subPlayers=players.filter(p=>p.sub);
-      const mainPlayers=players.filter(p=>!p.sub);
-      if(subPlayers.length>0){
-        const subIn=subPlayers[Math.floor(Math.random()*subPlayers.length)];
-        const subOut=mainPlayers[Math.floor(Math.random()*mainPlayers.length)];
-        subIn.sub=false;
-        subOut.sub=true;
-        const li=document.createElement('li');
-        li.textContent=`Substitution: ${subOut.name} OUT, ${subIn.name} IN`;
-        eventLog.appendChild(li);
-        renderPlayers();
-      }
-    }
-
-    if(matchTime>=90){
-      clearInterval(interval);
-      matches.push({opponent,date:new Date().
