@@ -1,1159 +1,164 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Wandoo United FC — Club Management v2.0</title>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wandoo United FC - Club Management</title>
 <style>
-  :root{
-    --bg:#030624;
-    --card:#071033;
-    --glass: rgba(255,255,255,0.03);
-    --accent1:#00ffcc;
-    --accent2:#00bfff;
-    --accent3:#7cff00;
-    --muted:#9aa4b2;
-    --danger:#ff6b6b;
-    --text:#e6f7ff;
-    --glass-2: rgba(255,255,255,0.02);
-    --safe:#2ecc71;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;background:
-    radial-gradient(800px 400px at 10% 10%, rgba(0,255,204,0.03), transparent 8%),
-    linear-gradient(180deg,#020417 0%, #031033 100%); color:var(--text); -webkit-font-smoothing:antialiased}
-  header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1200px;margin:8px auto}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo-shield{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
-  h1{margin:0;font-size:18px}
-  .subtitle{color:var(--muted);font-size:13px}
-
-  .container{max-width:1200px;margin:0 auto;padding:12px;display:grid;grid-template-columns:260px 1fr;gap:18px}
-  /* sidebar */
-  .sidebar{background:linear-gradient(180deg,var(--card),rgba(255,255,255,0.01));border-radius:12px;padding:14px;box-shadow:0 12px 30px rgba(1,6,20,0.7)}
-  .club{display:flex;gap:12px;align-items:center}
-  .club .title{font-weight:700}
-  .uploader{display:flex;gap:8px;align-items:center;margin-top:10px}
-  .logo-preview{width:56px;height:56px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center}
-  .nav{margin-top:14px;display:flex;flex-direction:column;gap:8px}
-  .nav button{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--text);padding:10px;border-radius:8px;text-align:left;cursor:pointer;font-size:14px}
-  .nav button.active{background:linear-gradient(90deg,rgba(0,191,255,0.06),rgba(0,255,204,0.04));border-color:rgba(0,255,204,0.14)}
-  .small{font-size:13px;color:var(--muted)}
-
-  /* main area */
-  .main{display:flex;flex-direction:column;gap:12px}
-  .topcards{display:flex;gap:12px;flex-wrap:wrap}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.6)}
-  .card h3{margin:0;font-size:13px;color:var(--muted)}
-  .big{font-size:22px;font-weight:700;margin-top:8px}
-  .grid{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:6px}
-
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px}
-  th{color:var(--muted);font-size:12px;text-transform:uppercase}
-  .btn{padding:8px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#00222f;cursor:pointer;font-weight:600}
-  .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.03)}
-  .btn.danger{background:linear-gradient(90deg,var(--danger),#ff8474);color:#fff}
-  input, select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)}
-  .muted{color:var(--muted)}
-
-  .flex{display:flex;gap:8px;align-items:center}
-  .pill{background:rgba(255,255,255,0.02);padding:6px 10px;border-radius:999px}
-
-  #toast{position:fixed;right:18px;bottom:18px;background:linear-gradient(90deg,#001727,#00334d);color:#bfffe6;padding:10px 14px;border-radius:10px;display:none;align-items:center;gap:8px}
-  #toast.play{display:flex;animation:toastIn .3s ease}
-  @keyframes toastIn{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
-
-  @media (max-width:980px){
-    .container{grid-template-columns:1fr; padding-bottom:80px}
-    .grid{grid-template-columns:1fr}
-    .sidebar{order:2}
-  }
-
-  /* subtle table buttons */
-  .icon-btn{background:transparent;border:0;color:var(--text);cursor:pointer;padding:6px;border-radius:6px}
-  .small-muted{font-size:12px;color:var(--muted)}
-  .hr{height:1px;background:rgba(255,255,255,0.03);margin:10px 0;border-radius:2px}
-  .stat-row{display:flex;justify-content:space-between;align-items:center}
-  .transfer-card{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01)}
-  
-  /* New homepage styles */
-  .homepage-container {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 20px 0;
-    animation: fadeIn 1.2s ease;
-  }
-  
-  .hero-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    padding: 40px 0;
-    animation: slideInFromLeft 1s ease;
-  }
-  
-  .hero-content {
-    flex: 1;
-  }
-  
-  .hero-image {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .hero-image img {
-    max-width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  .hero-title {
-    font-size: 3.5rem;
-    font-weight: 800;
-    margin: 0;
-    background: linear-gradient(90deg, var(--accent1), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1.1;
-  }
-  
-  .hero-subtitle {
-    font-size: 1.2rem;
-    color: var(--muted);
-    margin: 16px 0 24px;
-  }
-  
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin: 40px 0;
-  }
-  
-  .feature-card {
-    background: linear-gradient(135deg, var(--card), rgba(255,255,255,0.02));
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: slideInFromRight 0.8s ease;
-  }
-  
-  .feature-card:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  
-  .feature-card:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-  }
-  
-  .feature-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-  }
-  
-  .feature-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0 0 12px;
-  }
-  
-  .feature-description {
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  
-  .cta-section {
-    text-align: center;
-    padding: 60px 20px;
-    background: linear-gradient(135deg, rgba(0,255,204,0.05), rgba(0,191,255,0.05));
-    border-radius: 16px;
-    margin: 40px 0;
-    animation: fadeInUp 1s ease;
-  }
-  
-  .cta-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin: 0 0 16px;
-  }
-  
-  .cta-description {
-    font-size: 1.1rem;
-    color: var(--muted);
-    max-width: 600px;
-    margin: 0 auto 30px;
-  }
-  
-  .music-controls {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--card);
-    padding: 10px 16px;
-    border-radius: 50px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-  }
-  
-  .music-toggle {
-    background: transparent;
-    border: none;
-    color: var(--text);
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    transition: background 0.3s;
-  }
-  
-  .music-toggle:hover {
-    background: rgba(255,255,255,0.1);
-  }
-  
-  .music-info {
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
-  
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes slideInFromLeft {
-    from { transform: translateX(-100px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-  
-  @keyframes slideInFromRight {
-    from { transform: translateX(100px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-  
-  @keyframes fadeInUp {
-    from { transform: translateY(40px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  
-  @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-    100% { transform: translateY(0px); }
-  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;background:#f4f4f4;overflow-x:hidden;}
+  nav{display:flex;background:#1a1a1a;color:#fff;padding:10px 20px;align-items:center;flex-wrap:wrap;}
+  nav a{color:#fff;text-decoration:none;margin-right:20px;font-weight:bold;}
+  nav a:hover{text-decoration:underline;}
+  #hero{display:flex;flex-direction:row;align-items:center;justify-content:space-between;padding:50px 20px;background:#e5f0ff;overflow:hidden;}
+  #hero-text{max-width:50%;}
+  #hero-text h1{font-size:3em;background:linear-gradient(to right,#ff416c,#ff4b2b);-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
+  #hero-text p{font-size:1.2em;margin-bottom:20px;}
+  #hero-text button{padding:10px 20px;margin-right:10px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;}
+  #get-started{background:#ff416c;color:#fff;}
+  #view-demo{background:#ff4b2b;color:#fff;}
+  #hero-image{max-width:45%;animation: float 3s ease-in-out infinite alternate;}
+  @keyframes float{0%{transform:translateY(0px);}100%{transform:translateY(-20px);}}
+  #features{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;}
+  .feature-card{background:#fff;padding:20px;border-radius:10px;width:250px;box-shadow:0 2px 10px rgba(0,0,0,0.1);opacity:0;transform:translateX(-50px);transition:all 0.5s ease;}
+  .feature-card.visible{opacity:1;transform:translateX(0);}
+  .feature-card:hover{transform:translateY(-10px);box-shadow:0 4px 15px rgba(0,0,0,0.2);}
+  main{display:flex;flex-wrap:wrap;justify-content:center;padding:20px;gap:20px;}
+  .card{background:#fff;border-radius:10px;padding:15px;width:250px;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+  .card h3{margin-bottom:5px;}
+  .card button{margin-top:5px;padding:5px 10px;border:none;border-radius:5px;background:#ff416c;color:#fff;cursor:pointer;}
+  #music-player{position:fixed;bottom:20px;left:20px;background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.3);z-index:100;}
+  #music-toggle{display:inline-block;margin-top:10px;padding:5px 10px;background:#1a1a1a;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+  h2{text-align:center;margin-bottom:20px;}
+  ul{list-style:none;padding:0;max-height:150px;overflow-y:auto;}
+  li{padding:10px;margin:5px 0;background:#eee;border-radius:5px;cursor:pointer;}
+  li:hover{background:#ddd;}
+  audio{width:100%;margin-top:10px;display:block;}
+  #match-form input,#match-form button{padding:5px;margin:5px;border-radius:5px;border:1px solid #ccc;}
+  #match-table{width:90%;margin:20px auto;border-collapse:collapse;}
+  #match-table th,#match-table td{border:1px solid #ccc;padding:10px;text-align:center;}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <!-- Futuristic SVG logo -->
-    <div class="logo-shield" aria-hidden="true">
-      <!-- SVG shaped badge -->
-      <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#00ffcc"/><stop offset="1" stop-color="#00bfff"/></linearGradient>
-        </defs>
-        <path d="M50 4 L84 18 V46 C84 68 67 86 50 96 C33 86 16 68 16 46 V18 Z" fill="url(#g1)" opacity="0.95"/>
-        <circle cx="50" cy="42" r="11" fill="#001c2b"/>
-        <path d="M42 36 L58 48 M58 36 L42 48" stroke="#00ffcc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <text x="50" y="66" text-anchor="middle" font-size="12" fill="#001c2b" font-weight="700">WU</text>
-      </svg>
-    </div>
-    <div>
-      <h1>Wandoo United FC — Club Management v2.0</h1>
-      <div class="subtitle">Full club features — demo (client-only)</div>
-    </div>
+<nav>
+  <a href="#hero">Home</a>
+  <a href="#features">Features</a>
+  <a href="#players">Players</a>
+  <a href="#matches">Matches</a>
+  <a href="#music-player">Music</a>
+</nav>
+
+<section id="hero">
+  <div id="hero-text">
+    <h1>Wandoo United FC</h1>
+    <p>Manage your football club efficiently with stats, player management, matches, and music!</p>
+    <button id="get-started">Get Started</button>
+    <button id="view-demo">View Demo</button>
   </div>
-
-  <div class="flex">
-    <div class="pill small-muted">Demo users: admin/1234 • manager/5678 • viewer/0000</div>
-  </div>
-</header>
-
-<div class="container">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="club">
-      <div class="logo-preview" id="sidebarLogo"><!-- filled by JS --></div>
-      <div>
-        <div class="title">Wandoo United FC</div>
-        <div class="small muted" id="stadiumName">The Neon Arena</div>
-      </div>
-    </div>
-
-    <div class="uploader">
-      <input id="logoInput" type="file" accept="image/*" style="display:none"/>
-      <button class="btn ghost" id="uploadLogoBtn">Change Logo</button>
-    </div>
-
-    <div class="hr"></div>
-
-    <div class="nav">
-      <button class="active" data-section="homepage">Home</button>
-      <button data-section="dashboard">Dashboard</button>
-      <button data-section="squad">Squad</button>
-      <button data-section="matchcenter">Match Center</button>
-      <button data-section="statistics">Statistics</button>
-      <button data-section="finances">Finances</button>
-      <button data-section="transfers">Transfer Market</button>
-      <button data-section="admin">Admin Panel</button>
-      <button data-section="settings">Settings</button>
-    </div>
-
-    <div style="margin-top:12px;">
-      <div style="display:flex;gap:8px">
-        <button class="btn" id="openLoginBtn">Sign in</button>
-        <button class="btn ghost" id="logoutBtn" style="display:none">Sign out</button>
-      </div>
-    </div>
-
-    <div style="margin-top:12px;">
-      <div class="small-muted">Balance:</div>
-      <div class="big" id="balanceDisplay">—</div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <!-- HOMEPAGE -->
-    <div id="section-homepage" class="homepage-container" style="display:block">
-      <!-- Hero Section -->
-      <section class="hero-section">
-        <div class="hero-content">
-          <h1 class="hero-title">Wandoo United FC</h1>
-          <p class="hero-subtitle">The future of football club management is here. Take control of your team with our comprehensive management platform.</p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn" id="getStartedBtn">Get Started</button>
-            <button class="btn ghost" id="viewDemoBtn">View Demo</button>
-          </div>
-        </div>
-        <div class="hero-image">
-          <svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="pitchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00ffcc" stop-opacity="0.1"/>
-                <stop offset="100%" stop-color="#00bfff" stop-opacity="0.1"/>
-              </linearGradient>
-              <linearGradient id="playerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00ffcc"/>
-                <stop offset="100%" stop-color="#00bfff"/>
-              </linearGradient>
-            </defs>
-            <rect width="400" height="300" fill="url(#pitchGradient)" rx="12"/>
-            <circle cx="200" cy="150" r="60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
-            <rect x="50" y="120" width="300" height="60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
-            <circle cx="200" cy="150" r="10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
-            <circle cx="80" cy="150" r="10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
-            <circle cx="320" cy="150" r="10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
-            
-            <!-- Players -->
-            <circle cx="120" cy="100" r="8" fill="url(#playerGradient)"/>
-            <circle cx="150" cy="130" r="8" fill="url(#playerGradient)"/>
-            <circle cx="180" cy="150" r="8" fill="url(#playerGradient)"/>
-            <circle cx="220" cy="170" r="8" fill="url(#playerGradient)"/>
-            <circle cx="250" cy="100" r="8" fill="url(#playerGradient)"/>
-            <circle cx="280" cy="130" r="8" fill="url(#playerGradient)"/>
-          </svg>
-        </div>
-      </section>
-
-      <!-- Features Grid -->
-      <section class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#001c2b" stroke-width="2"/>
-              <path d="M19 4H5C4.44772 4 4 4.44772 4 5V19C4 19.5523 4.44772 20 5 20H19C19.5523 20 20 19.5523 20 19V5C20 4.44772 19.5523 4 19 4Z" stroke="#001c2b" stroke-width="2"/>
-            </svg>
-          </div>
-          <h3 class="feature-title">Squad Management</h3>
-          <p class="feature-description">Manage your entire squad with ease. Track player stats, assign positions, and create optimal lineups for every match.</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 8V12L15 15" stroke="#001c2b" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="12" cy="12" r="10" stroke="#001c2b" stroke-width="2"/>
-            </svg>
-          </div>
-          <h3 class="feature-title">Match Center</h3>
-          <p class="feature-description">Track matches in real-time, record goals, assists, cards, and substitutions. Analyze performance with detailed statistics.</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#001c2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="feature-title">Transfer Market</h3>
-          <p class="feature-description">Buy and sell players in the transfer market. Manage your budget and build the ultimate team for success.</p>
-        </div>
-      </section>
-
-      <!-- CTA Section -->
-      <section class="cta-section">
-        <h2 class="cta-title">Ready to take your club to the next level?</h2>
-        <p class="cta-description">Join thousands of clubs already using Wandoo United FC Management System to streamline operations and achieve success.</p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-          <button class="btn" id="signUpBtn">Sign Up Now</button>
-          <button class="btn ghost" id="learnMoreBtn">Learn More</button>
-        </div>
-      </section>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="section-dashboard" class="card" style="display:none">
-      <h3>Overview</h3>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
-        <div style="flex:1;min-width:320px" class="card">
-          <h4>Goals by player</h4>
-          <div style="height:220px"><canvas id="goalsChart"></canvas></div>
-        </div>
-        <div style="width:340px" class="card">
-          <h4>Finances</h4>
-          <div style="height:160px"><canvas id="financeChart"></canvas></div>
-          <div style="margin-top:8px">
-            <div class="stat-row"><div class="small-muted">Income</div><div id="statIncome">—</div></div>
-            <div class="stat-row"><div class="small-muted">Expenses</div><div id="statExpenses">—</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SQUAD -->
-    <div id="section-squad" class="card" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3>Squad Management</h3>
-        <div class="flex">
-          <button class="btn ghost" id="exportSquadBtn">Export squad</button>
-          <button class="btn" id="autoNumbersBtn">Auto assign numbers</button>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
-        <div style="flex:1;min-width:420px">
-          <h4>Players</h4>
-          <input id="filterPlayer" placeholder="Search player or position" />
-          <table id="playersTable"><tr><th>#</th><th>Name</th><th>Pos</th><th>Apps</th><th>G</th><th>A</th><th>Action</th></tr></table>
-        </div>
-
-        <div style="width:320px">
-          <h4>Add / Edit Player</h4>
-          <input id="edit_id" type="hidden">
-          <input id="edit_name" placeholder="Full name" />
-          <input id="edit_position" placeholder="Position" />
-          <input id="edit_number" placeholder="Jersey number" type="number" />
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="btn" id="savePlayerBtn">Save</button>
-            <button class="btn ghost" id="clearPlayerForm">Clear</button>
-          </div>
-          <div class="hr" style="margin-top:10px"></div>
-          <h4>Starting lineup</h4>
-          <div id="startingList"></div>
-          <div style="margin-top:8px">
-            <button class="btn" id="applyLineupBtn">Apply lineup</button>
-            <button class="btn ghost" id="clearLineupBtn">Clear lineup</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MATCH CENTER -->
-    <div id="section-matchcenter" class="card" style="display:none;margin-top:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3>Match Center</h3>
-        <div>
-          <button class="btn" id="newMatchBtn">Create match</button>
-          <button class="btn ghost" id="refreshMatches">Refresh</button>
-        </div>
-      </div>
-
-      <div style="margin-top:10px">
-        <table id="matchesList"><tr><th>Date</th><th>Fixture</th><th>Score</th><th>Events</th><th>Action</th></tr></table>
-      </div>
-
-      <!-- Match modal (simple) -->
-      <div id="matchModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);align-items:center;justify-content:center">
-        <div style="width:92%;max-width:720px;background:var(--card);padding:12px;border-radius:10px">
-          <h4 id="matchModalTitle">Create Match</h4>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <input id="m_date" type="date" />
-            <input id="m_comp" placeholder="Competition (e.g. League)" />
-            <input id="m_teamA" placeholder="Team A" value="Wandoo United FC" />
-            <input id="m_teamB" placeholder="Team B" />
-            <input id="m_score_input" placeholder="Score e.g. 2-1" />
-          </div>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button class="btn" id="saveMatchBtn">Save</button>
-            <button class="btn ghost" id="closeMatchModal">Cancel</button>
-            <button class="btn ghost" id="startLiveBtn">Start live (simulate)</button>
-          </div>
-
-          <div id="liveControls" style="display:none;margin-top:12px">
-            <h4>Live Match Controls</h4>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <select id="livePlayerSelect"></select>
-              <button class="btn" id="liveGoalBtn">Record Goal</button>
-              <button class="btn ghost" id="liveAssistBtn">Record Assist</button>
-              <button class="btn ghost" id="liveYellowBtn">Yellow Card</button>
-              <button class="btn danger" id="liveRedBtn">Red Card</button>
-              <button class="btn ghost" id="liveSubBtn">Substitute</button>
-            </div>
-            <div style="margin-top:10px">
-              <div class="small-muted">Events</div>
-              <div id="liveEvents" style="max-height:160px;overflow:auto;background:rgba(0,0,0,0.2);padding:8px;border-radius:8px;margin-top:8px"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- STATISTICS -->
-    <div id="section-statistics" class="card" style="display:none;margin-top:12px">
-      <h3>Player Statistics</h3>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px">
-        <div style="flex:1;min-width:420px" class="card">
-          <h4>Top scorers</h4>
-          <table id="topScorers"><tr><th>Player</th><th>G</th><th>A</th><th>Apps</th></tr></table>
-        </div>
-        <div style="width:320px" class="card">
-          <h4>Cards summary</h4>
-          <div id="cardsSummary"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FINANCES -->
-    <div id="section-finances" class="card" style="display:none;margin-top:12px">
-      <h3>Finances</h3>
-      <div style="display:flex;gap:12px">
-        <div style="flex:1">
-          <h4>Transactions</h4>
-          <table id="txTable"><tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th><th>Action</th></tr></table>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <input id="tx_amount" type="number" placeholder="Amount (positive income, negative expense)" />
-            <input id="tx_note" placeholder="Note" />
-            <button class="btn" id="addTxBtn">Add</button>
-          </div>
-        </div>
-        <div style="width:320px">
-          <h4>Summary</h4>
-          <div class="stat-row"><div class="small-muted">Balance</div><div id="finBalance">—</div></div>
-          <div class="stat-row"><div class="small-muted">Total Income</div><div id="finIncome">—</div></div>
-          <div class="stat-row"><div class="small-muted">Total Expenses</div><div id="finExpenses">—</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TRANSFERS -->
-    <div id="section-transfers" class="card" style="display:none;margin-top:12px">
-      <h3>Transfer Market</h3>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <div style="flex:1;min-width:420px">
-          <h4>Market Players</h4>
-          <div id="marketList"></div>
-        </div>
-        <div style="width:320px">
-          <h4>Your Transfers</h4>
-          <div id="myTransfers"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ADMIN -->
-    <div id="section-admin" class="card" style="display:none;margin-top:12px">
-      <h3>Admin Control Panel</h3>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <div style="flex:1">
-          <h4>Manage Users</h4>
-          <table id="usersTable"><tr><th>Username</th><th>Role</th><th>Action</th></tr></table>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <input id="newUserName" placeholder="username" />
-            <input id="newUserPass" placeholder="password" />
-            <select id="newUserRole"><option>admin</option><option>manager</option><option>viewer</option></select>
-            <button class="btn" id="createUserBtn">Create</button>
-          </div>
-        </div>
-
-        <div style="width:320px">
-          <h4>Club Info</h4>
-          <input id="clubName" placeholder="Club name" value="Wandoo United FC" />
-          <input id="stadium" placeholder="Stadium" value="The Neon Arena" />
-          <button class="btn" id="saveClubBtn">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div id="section-settings" class="card" style="display:none;margin-top:12px">
-      <h3>Settings & Export</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn ghost" id="exportAllBtn">Export all data</button>
-        <button class="btn ghost" id="importAllBtn">Import data</button>
-        <button class="btn danger" id="clearAllBtn">Clear all (reset)</button>
-        <input id="importFile" type="file" accept="application/json" style="display:none">
-        <button class="btn ghost" id="exportReadmeBtn">Export README</button>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- Music Controls -->
-<div class="music-controls">
-  <button class="music-toggle" id="musicToggle">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 3V21M8 6V18M16 6V18M4 9V15M20 9V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <div id="hero-image">
+    <svg width="300" height="200" viewBox="0 0 300 200">
+      <rect x="0" y="0" width="300" height="200" fill="#6bbf59" stroke="#fff" stroke-width="2"/>
+      <circle cx="150" cy="100" r="20" stroke="#fff" stroke-width="2" fill="none"/>
+      <line x1="150" y1="0" x2="150" y2="200" stroke="#fff" stroke-width="2"/>
     </svg>
-  </button>
-  <div class="music-info">Background Music</div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="feature-card">Dynamic Player Management</div>
+  <div class="feature-card">Match Scheduling & Results</div>
+  <div class="feature-card">Stats & Analytics Dashboard</div>
+  <div class="feature-card">Responsive & Modern Design</div>
+</section>
+
+<main id="players"></main>
+
+<section id="matches">
+<h2>Club Matches</h2>
+<form id="match-form">
+  <input type="text" id="opponent" placeholder="Opponent" required>
+  <input type="date" id="date" required>
+  <input type="text" id="score" placeholder="Score" required>
+  <button type="submit">Add Match</button>
+</form>
+<table id="match-table">
+  <thead>
+    <tr><th>Opponent</th><th>Date</th><th>Score</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</section>
+
+<div id="music-player">
+  <h2>🎶 Football Anthems</h2>
+  <ul id="playlist"></ul>
+  <audio id="player" controls autoplay loop></audio>
+  <button id="music-toggle">Toggle Music</button>
 </div>
-
-<div id="toast"><span id="toastText"></span></div>
-
-<!-- Audio element for background music -->
-<audio id="backgroundMusic" loop>
-  <source src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3" type="audio/mpeg">
-</audio>
 
 <script>
-/* ============================
-   Wandoo United FC v2.0 (single-file)
-   - Full club management demo (client-side)
-   - Data persisted in localStorage
-   ============================ */
-
-/* ---------- Demo users (client-only) ---------- */
-let USERS = JSON.parse(localStorage.getItem('wu_users_v2')) || [
-  { username:'admin', password:'1234', role:'admin' },
-  { username:'manager', password:'5678', role:'manager' },
-  { username:'viewer', password:'0000', role:'viewer' }
-];
-localStorage.setItem('wu_users_v2', JSON.stringify(USERS));
-
-/* ---------- Storage keys ---------- */
-const KEYS = {
-  players: 'wu_players_v2',
-  matches: 'wu_matches_v2',
-  transactions: 'wu_tx_v2',
-  transfers: 'wu_transfers_v2',
-  user: 'wu_current_user_v2',
-  pom: 'wu_pom_v2',
-  logo: 'wu_logo_v2',
-  club: 'wu_club_v2',
-  users: 'wu_users_v2'
-};
-
-/* ---------- Seed sample team if empty ---------- */
-function uid(){ return 'id_' + Math.random().toString(36).slice(2,9); }
-function nowISO(){ return new Date().toISOString().slice(0,10); }
-let players = JSON.parse(localStorage.getItem(KEYS.players) || 'null');
-if (!players) {
-  const sample = [
-    { name:"Mark Njoroge", position:"GK", number:1, age:28 },
-    { name:"Samuel Otieno", position:"RB", number:2, age:24 },
-    { name:"Michael Kiptoo", position:"LB", number:3, age:26 },
-    { name:"David Mwangi", position:"CB", number:4, age:30 },
-    { name:"Brian Ouma", position:"CB", number:5, age:27 },
-    { name:"Kevin Wambua", position:"DM", number:6, age:25 },
-    { name:"Alex Wekesa", position:"CM", number:8, age:23 },
-    { name:"John Kamau", position:"RW", number:7, age:22 },
-    { name:"Peter Otieno", position:"LW", number:11, age:25 },
-    { name:"Patrick Osei", position:"ST", number:9, age:24 },
-    { name:"Felix Awuor", position:"ST", number:10, age:29 }
+  // ===== Kenyan Squad with Stats & Edit =====
+  let players = [
+    {name:"Victor Wanyama",position:"Midfielder",age:30,goals:5,assists:7},
+    {name:"Michael Olunga",position:"Forward",age:27,goals:15,assists:6},
+    {name:"Eric Johana",position:"Defender",age:25,goals:1,assists:2},
+    {name:"Arnold Origi",position:"Goalkeeper",age:34,goals:0,assists:0},
+    {name:"Clinton N'Jie",position:"Forward",age:26,goals:10,assists:4},
+    {name:"Eric Ouma",position:"Defender",age:23,goals:0,assists:1},
+    {name:"Joash Onyango",position:"Defender",age:24,goals:2,assists:1},
+    {name:"Aboud Omar",position:"Defender",age:28,goals:1,assists:3},
+    {name:"Dennis Oliech",position:"Forward",age:32,goals:12,assists:5},
+    {name:"McDonald Mariga",position:"Midfielder",age:31,goals:3,assists:6},
+    {name:"Patrick Matasi",position:"Goalkeeper",age:29,goals:0,assists:0}
   ];
-  players = sample.map(p => ({ id: uid(), ...p, apps:0, goals: p.number===9?10:(p.number===7?8:(p.number===10?6: (p.number===11?4: (p.number===8?3: (p.number===6?2: p.goals||0 ))))), assists:0, yellow:0, red:0, captain:false }));
-  // set captain
-  players[3].captain = true;
-  localStorage.setItem(KEYS.players, JSON.stringify(players));
-}
-let matches = JSON.parse(localStorage.getItem(KEYS.matches) || 'null');
-if (!matches) {
-  matches = [
-    { id: uid(), date:"2025-09-01", comp:"League", teamA:"Wandoo United", teamB:"Red Lions", score:"2-1", events: [] },
-    { id: uid(), date:"2025-09-08", comp:"League", teamA:"Blue Sharks", teamB:"Wandoo United", score:"1-1", events: [] }
-  ];
-  localStorage.setItem(KEYS.matches, JSON.stringify(matches));
-}
-let transactions = JSON.parse(localStorage.getItem(KEYS.transactions) || 'null') || [];
-if (!localStorage.getItem(KEYS.transactions)) {
-  transactions = [
-    { id: uid(), date: nowISO(), amount: 5000, note: 'Sponsorship', type:'income' },
-    { id: uid(), date: nowISO(), amount: -800, note: 'Kit purchase', type:'expense' }
-  ];
-  localStorage.setItem(KEYS.transactions, JSON.stringify(transactions));
-}
-let transfers = JSON.parse(localStorage.getItem(KEYS.transfers) || 'null') || [];
-if (!localStorage.getItem(KEYS.transfers)) {
-  transfers = [];
-  localStorage.setItem(KEYS.transfers, JSON.stringify(transfers));
-}
-let club = JSON.parse(localStorage.getItem(KEYS.club) || 'null') || { name:'Wandoo United FC', stadium:'The Neon Arena' };
-localStorage.setItem(KEYS.club, JSON.stringify(club));
-let POM = localStorage.getItem(KEYS.pom) || null;
-let teamLogo = localStorage.getItem(KEYS.logo) || null;
-let currentUser = JSON.parse(localStorage.getItem(KEYS.user)) || { username:'Guest', role:'viewer' };
 
-/* ---------- Small helpers ---------- */
-function saveAll() {
-  localStorage.setItem(KEYS.players, JSON.stringify(players));
-  localStorage.setItem(KEYS.matches, JSON.stringify(matches));
-  localStorage.setItem(KEYS.transactions, JSON.stringify(transactions));
-  localStorage.setItem(KEYS.transfers, JSON.stringify(transfers));
-  localStorage.setItem(KEYS.club, JSON.stringify(club));
-  localStorage.setItem(KEYS.user, JSON.stringify(currentUser));
-  if (POM) localStorage.setItem(KEYS.pom, POM);
-  if (teamLogo) localStorage.setItem(KEYS.logo, teamLogo);
-}
+  const playerContainer=document.getElementById('players');
 
-/* ---------- Toast & sound ---------- */
-let toastTimer = null;
-function toast(msg){ const el=document.getElementById('toast'), t=document.getElementById('toastText'); t.textContent=msg; el.classList.add('play'); el.style.display='flex'; playTone(560,'sine',0.08); if (toastTimer) clearTimeout(toastTimer); toastTimer = setTimeout(()=>{ el.classList.remove('play'); el.style.display='none'; }, 2200); }
-function playTone(freq=440, type='sine', duration=0.08){ try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.type=type; o.frequency.value=freq; o.connect(g); g.connect(ctx.destination); g.gain.value=0.0001; o.start(); g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime+duration); setTimeout(()=>{ o.stop(); ctx.close(); }, duration*1000+20); }catch(e){} }
-
-/* ---------- UI wiring ---------- */
-function updateSidebarClub(){ document.querySelector('#sidebarLogo').innerHTML = teamLogo ? '<img src="'+teamLogo+'" style="width:56px;height:56px;object-fit:cover">' : '<div style="width:56px;height:56px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:#012;font-weight:700">WU</div>'; document.getElementById('stadiumName').textContent = club.stadium; }
-function refreshAuthUI(){ document.getElementById('signedUser').textContent = currentUser.username || 'Guest'; document.getElementById('signedRole').textContent = currentUser.role || 'viewer'; document.getElementById('userName').textContent = currentUser.username==='Guest' ? 'Guest' : currentUser.username; document.getElementById('userRole').textContent = 'Role: ' + (currentUser.role||'viewer'); document.getElementById('loginBox').style.display = (currentUser.username && currentUser.username!=='Guest') ? 'none' : 'block'; document.getElementById('loggedBox').style.display = (currentUser.username && currentUser.username!=='Guest') ? 'block' : 'none'; document.getElementById('logoutBtn').style.display = (currentUser.username && currentUser.username!=='Guest') ? 'inline-block' : 'none'; saveAll(); }
-
-/* ---------- Navigation ---------- */
-document.querySelectorAll('.nav button').forEach(btn => btn.addEventListener('click', ()=> { document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); const s = btn.getAttribute('data-section'); showSection(s); }));
-function showSection(s){ const secs = ['homepage','dashboard','squad','matchcenter','statistics','finances','transfers','admin','settings']; secs.forEach(k=>{ const el = document.getElementById('section-'+k); if (el) el.style.display = (k===s?'block':'none'); }); if (s==='squad') renderPlayers(); if (s==='matchcenter') renderMatches(); if (s==='statistics') renderStatistics(); if (s==='finances') renderTransactions(); if (s==='transfers') renderMarket(); if (s==='admin') renderUsers(); }
-
-/* ---------- Logo upload ---------- */
-document.getElementById('uploadLogoBtn').addEventListener('click', ()=> document.getElementById('logoInput').click());
-document.getElementById('logoInput').addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const r=new FileReader(); r.onload=()=>{ teamLogo = r.result; localStorage.setItem(KEYS.logo, teamLogo); updateSidebarClub(); toast('Club logo updated'); }; r.readAsDataURL(f); });
-
-/* ---------- Auth ---------- */
-document.getElementById('demoFillBtn').addEventListener('click', ()=> { document.getElementById('loginUser').value='admin'; document.getElementById('loginPass').value='1234'; });
-document.getElementById('loginBtn').addEventListener('click', ()=> {
-  const u=document.getElementById('loginUser').value.trim(); const p=document.getElementById('loginPass').value;
-  const allUsers = JSON.parse(localStorage.getItem(KEYS.users) || '[]');
-  const found = allUsers.find(x=>x.username===u && x.password===p);
-  if (!found){ toast('Login failed'); return; }
-  currentUser = { username: found.username, role: found.role }; localStorage.setItem(KEYS.user, JSON.stringify(currentUser)); refreshAuthUI(); toast('Welcome '+found.username);
-});
-document.getElementById('logoutBtnSide')?.addEventListener('click', ()=> signOut());
-document.getElementById('logoutBtn')?.addEventListener('click', ()=> signOut());
-function signOut(){ currentUser = { username:'Guest', role:'viewer' }; localStorage.setItem(KEYS.user, JSON.stringify(currentUser)); refreshAuthUI(); toast('Signed out'); }
-
-/* ---------- Players (Squad) ---------- */
-function renderPlayers(filter='') {
-  const table = document.getElementById('playersTable'); table.innerHTML = '<tr><th>#</th><th>Name</th><th>Pos</th><th>Apps</th><th>G</th><th>A</th><th>Action</th></tr>';
-  players.filter(p=> { if(!filter) return true; const s = filter.toLowerCase(); return p.name.toLowerCase().includes(s) || (p.position||'').toLowerCase().includes(s); }).forEach(p=>{
-    const tr = table.insertRow();
-    tr.insertCell().textContent = p.number || '—';
-    tr.insertCell().textContent = p.name;
-    tr.insertCell().textContent = p.position;
-    tr.insertCell().textContent = p.apps || 0;
-    tr.insertCell().textContent = p.goals || 0;
-    tr.insertCell().textContent = p.assists || 0;
-    const ac = tr.insertCell();
-    const edit = document.createElement('button'); edit.className='btn ghost'; edit.textContent='Edit'; edit.addEventListener('click', ()=> fillPlayerForm(p.id));
-    ac.appendChild(edit);
-    if (currentUser.role==='admin' || currentUser.role==='manager') {
-      const del = document.createElement('button'); del.className='btn danger'; del.style.marginLeft='6px'; del.textContent='Delete';
-      del.addEventListener('click', ()=> { if (!confirm('Delete '+p.name+'?')) return; players = players.filter(x=>x.id!==p.id); saveAll(); renderPlayers(); renderChart(); toast('Player deleted'); });
-      ac.appendChild(del);
-    }
-  });
-  document.getElementById('cardSquad').textContent = players.length;
-}
-document.getElementById('filterPlayer').addEventListener('input', e=> renderPlayers(e.target.value));
-function fillPlayerForm(id){
-  const p = players.find(x=>x.id===id); if (!p) return;
-  document.getElementById('edit_id').value = p.id; document.getElementById('edit_name').value=p.name; document.getElementById('edit_position').value=p.position; document.getElementById('edit_number').value=p.number;
-}
-document.getElementById('savePlayerBtn').addEventListener('click', ()=>{
-  if (!['admin','manager'].includes(currentUser.role)) { toast('Permission denied'); return; }
-  const id = document.getElementById('edit_id').value; const name = document.getElementById('edit_name').value.trim(); const pos = document.getElementById('edit_position').value.trim(); const num = Number(document.getElementById('edit_number').value || 0);
-  if (!name || !pos) return toast('Name & position required');
-  if (id) {
-    const p = players.find(x=>x.id===id); Object.assign(p,{ name, position: pos, number: num }); toast('Player updated');
-  } else {
-    players.push({ id: uid(), name, position: pos, number: num, apps:0, goals:0, assists:0, yellow:0, red:0, captain:false });
-    toast('Player added');
-  }
-  document.getElementById('edit_id').value=''; document.getElementById('edit_name').value=''; document.getElementById('edit_position').value=''; document.getElementById('edit_number').value='';
-  saveAll(); renderPlayers(); renderChart();
-});
-document.getElementById('clearPlayerForm').addEventListener('click', ()=> { document.getElementById('edit_id').value=''; document.getElementById('edit_name').value=''; document.getElementById('edit_position').value=''; document.getElementById('edit_number').value=''; });
-
-/* auto assign numbers */
-document.getElementById('autoNumbersBtn').addEventListener('click', ()=> {
-  let num = 1;
-  players.forEach(p => { p.number = num++; });
-  saveAll(); renderPlayers(); toast('Jersey numbers assigned');
-});
-
-/* Starting lineup - simple pick first 11 by number or manual */
-function renderStartingList(){
-  const el = document.getElementById('startingList'); el.innerHTML='';
-  players.slice(0,11).forEach(p=>{
-    const b = document.createElement('div'); b.className='pill'; b.style.margin='4px 0'; b.textContent = (p.number||'')+' • '+p.name+' ('+p.position+')'; el.appendChild(b);
-  });
-}
-document.getElementById('applyLineupBtn').addEventListener('click', ()=> { toast('Lineup applied (demo)'); });
-document.getElementById('clearLineupBtn').addEventListener('click', ()=> { /* noop demo */ toast('Lineup cleared'); });
-
-/* ---------- Chart.js for goals and finances ---------- */
-let goalsChart=null, financeChart=null;
-function renderChart(){
-  const ctx = document.getElementById('goalsChart').getContext('2d');
-  const labels = players.map(p=>p.name);
-  const data = players.map(p=>p.goals||0);
-  if (goalsChart){ goalsChart.data.labels=labels; goalsChart.data.datasets[0].data=data; goalsChart.update(); return;}
-  goalsChart = new Chart(ctx, {
-    type:'bar',
-    data:{ labels, datasets:[{ label:'Goals', data, backgroundColor:'rgba(0,191,255,0.9)', borderRadius:6 }]},
-    options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ ticks:{ color:'#dff' } }, y:{ ticks:{ color:'#dff' }, beginAtZero:true } }, plugins:{ legend:{ display:false } } }
-  });
-}
-function renderFinanceChart(){
-  const ctx = document.getElementById('financeChart').getContext('2d');
-  const tx = JSON.parse(localStorage.getItem(KEYS.transactions)||'[]');
-  const income = tx.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0);
-  const expenses = tx.filter(t=>t.amount<0).reduce((s,t)=>s+t.amount,0)*-1;
-  if (financeChart){ financeChart.data.datasets[0].data=[income, expenses]; financeChart.update(); return; }
-  financeChart = new Chart(ctx, {
-    type:'doughnut',
-    data:{ labels:['Income','Expenses'], datasets:[{ data:[income, expenses], backgroundColor:['#00ffcc','#ff6b6b'] }]},
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ color:'#dff' } } } }
-  });
-}
-
-/* ---------- Matches & Match Center ---------- */
-function renderMatches(){
-  const t = document.getElementById('matchesList'); t.innerHTML = '<tr><th>Date</th><th>Fixture</th><th>Score</th><th>Events</th><th>Action</th></tr>';
-  matches.forEach(m=>{
-    const tr = t.insertRow();
-    tr.insertCell().textContent = m.date;
-    tr.insertCell().textContent = m.teamA + ' vs ' + m.teamB + (m.comp? ' ('+m.comp+')':'');
-    tr.insertCell().textContent = m.score || '-';
-    tr.insertCell().textContent = (m.events && m.events.length) ? m.events.length : 0;
-    const ac = tr.insertCell();
-    const view = document.createElement('button'); view.className='btn ghost'; view.textContent='View'; view.addEventListener('click', ()=> openMatchModal(m.id));
-    ac.appendChild(view);
-    if (currentUser.role!=='viewer') {
-      const edit = document.createElement('button'); edit.className='btn'; edit.style.marginLeft='6px'; edit.textContent='Edit'; edit.addEventListener('click', ()=> openMatchModal(m.id));
-      ac.appendChild(edit);
-    }
-  });
-}
-document.getElementById('newMatchBtn').addEventListener('click', ()=> openMatchModal());
-document.getElementById('refreshMatches').addEventListener('click', ()=> renderMatches());
-
-let editingMatchId = null;
-function openMatchModal(id=null){
-  editingMatchId = id || null;
-  document.getElementById('matchModal').style.display='flex';
-  document.getElementById('liveControls').style.display='none';
-  document.getElementById('matchModalTitle').textContent = id ? 'Edit Match' : 'Create Match';
-  if (id) {
-    const m = matches.find(x=>x.id===id);
-    document.getElementById('m_date').value = m.date || nowISO();
-    document.getElementById('m_comp').value = m.comp || '';
-    document.getElementById('m_teamA').value = m.teamA;
-    document.getElementById('m_teamB').value = m.teamB;
-    document.getElementById('m_score_input').value = m.score || '';
-  } else {
-    document.getElementById('m_date').value = nowISO();
-    document.getElementById('m_comp').value = '';
-    document.getElementById('m_teamA').value = 'Wandoo United';
-    document.getElementById('m_teamB').value = '';
-    document.getElementById('m_score_input').value = '';
-  }
-  populateLivePlayerSelect();
-}
-document.getElementById('closeMatchModal').addEventListener('click', ()=> document.getElementById('matchModal').style.display='none');
-document.getElementById('saveMatchBtn').addEventListener('click', ()=> {
-  const date = document.getElementById('m_date').value; const comp = document.getElementById('m_comp').value; const tA = document.getElementById('m_teamA').value; const tB = document.getElementById('m_teamB').value; const score = document.getElementById('m_score_input').value||'-';
-  if (!tA || !tB) return toast('Enter both teams');
-  if (editingMatchId){
-    const m = matches.find(x=>x.id===editingMatchId); Object.assign(m,{ date, comp, teamA:tA, teamB:tB, score });
-    toast('Match updated');
-  } else {
-    matches.push({ id:uid(), date, comp, teamA:tA, teamB:tB, score, events: [] });
-    toast('Match created');
-  }
-  saveAll(); renderMatches(); document.getElementById('matchModal').style.display='none';
-});
-document.getElementById('startLiveBtn').addEventListener('click', ()=> {
-  document.getElementById('liveControls').style.display='block'; document.getElementById('m_score_input').value = '0-0';
-  populateLivePlayerSelect(); document.getElementById('liveEvents').innerHTML=''; toast('Live mode started');
-});
-function populateLivePlayerSelect(){
-  const sel = document.getElementById('livePlayerSelect'); sel.innerHTML=''; players.forEach(p=>{ const o = document.createElement('option'); o.value=p.id; o.textContent = p.name+' ('+(p.position||'')+')'; sel.appendChild(o); });
-}
-
-/* live controls */
-document.getElementById('liveGoalBtn').addEventListener('click', ()=> {
-  const pid = document.getElementById('livePlayerSelect').value; const p = players.find(x=>x.id===pid); if (!p) return;
-  // increment goals and record event
-  p.goals = (p.goals||0)+1; p.apps = (p.apps||0)+1;
-  const ev = { time: new Date().toLocaleTimeString(), type:'goal', player:p.name };
-  document.getElementById('liveEvents').innerHTML = ev.time + ' • GOAL • ' + ev.player + '<br>' + document.getElementById('liveEvents').innerHTML;
-  toast('Goal: '+p.name); playTone(980,'triangle',0.12);
-  saveAll(); renderAll();
-});
-document.getElementById('liveAssistBtn').addEventListener('click', ()=> {
-  const pid = document.getElementById('livePlayerSelect').value; const p = players.find(x=>x.id===pid); if (!p) return;
-  p.assists = (p.assists||0)+1; p.apps = (p.apps||0)+1;
-  const ev = { time:new Date().toLocaleTimeString(), type:'assist', player:p.name };
-  document.getElementById('liveEvents').innerHTML = ev.time + ' • ASSIST • ' + ev.player + '<br>' + document.getElementById('liveEvents').innerHTML;
-  toast('Assist: '+p.name); playTone(640,'sine',0.08);
-  saveAll(); renderAll();
-});
-document.getElementById('liveYellowBtn').addEventListener('click', ()=> {
-  const pid = document.getElementById('livePlayerSelect').value; const p = players.find(x=>x.id===pid); if (!p) return;
-  p.yellow = (p.yellow||0)+1; const ev = { time:new Date().toLocaleTimeString(), type:'yellow', player:p.name }; document.getElementById('liveEvents').innerHTML = ev.time+' • YELLOW • '+ev.player+ '<br>'+document.getElementById('liveEvents').innerHTML; toast('Yellow card: '+p.name); playTone(220,'square',0.12); saveAll(); renderAll();
-});
-document.getElementById('liveRedBtn').addEventListener('click', ()=> {
-  const pid = document.getElementById('livePlayerSelect').value; const p = players.find(x=>x.id===pid); if (!p) return;
-  p.red = (p.red||0)+1; const ev = { time:new Date().toLocaleTimeString(), type:'red', player:p.name }; document.getElementById('liveEvents').innerHTML = ev.time+' • RED • '+ev.player+ '<br>'+document.getElementById('liveEvents').innerHTML; toast('Red card: '+p.name); playTone(180,'sawtooth',0.14); saveAll(); renderAll();
-});
-document.getElementById('liveSubBtn').addEventListener('click', ()=> {
-  const pid = document.getElementById('livePlayerSelect').value; const p = players.find(x=>x.id===pid); if (!p) return;
-  const inPlayer = prompt('Substitute IN (name or number)'); if (!inPlayer) return;
-  const ev = { time:new Date().toLocaleTimeString(), type:'sub', playerOut:p.name, playerIn:inPlayer }; document.getElementById('liveEvents').innerHTML = ev.time+' • SUB • '+ev.playerOut+' → '+ev.playerIn +'<br>'+document.getElementById('liveEvents').innerHTML; toast('Sub: '+p.name+' → '+inPlayer); playTone(420,'triangle',0.08); saveAll(); renderAll();
-});
-
-/* ---------- Statistics ---------- */
-function renderStatistics(){
-  const topTable = document.getElementById('topScorers'); topTable.innerHTML = '<tr><th>Player</th><th>G</th><th>A</th><th>Apps</th></tr>';
-  players.slice().sort((a,b)=> (b.goals||0) - (a.goals||0)).forEach(p=>{
-    const r = topTable.insertRow(); r.insertCell().textContent=p.name; r.insertCell().textContent=p.goals||0; r.insertCell().textContent=p.assists||0; r.insertCell().textContent=p.apps||0;
-  });
-  // cards summary
-  const cs = document.getElementById('cardsSummary'); cs.innerHTML = ''; players.forEach(p=>{ const d = document.createElement('div'); d.className='small-muted'; d.textContent = p.name + ' • Y:' + (p.yellow||0) + ' R:' + (p.red||0); cs.appendChild(d); });
-}
-
-/* ---------- Finances ---------- */
-function renderTransactions(){
-  const t = document.getElementById('txTable'); t.innerHTML = '<tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th><th>Action</th></tr>';
-  const txs = transactions.slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
-  txs.forEach(tx=>{
-    const tr = t.insertRow(); tr.insertCell().textContent = tx.date; tr.insertCell().textContent = tx.type || (tx.amount>0?'income':'expense'); tr.insertCell().textContent = tx.amount; tr.insertCell().textContent = tx.note || ''; const ac = tr.insertCell();
-    const del = document.createElement('button'); del.className='btn ghost'; del.textContent='Delete'; del.addEventListener('click', ()=> { transactions = transactions.filter(x=>x.id!==tx.id); saveAll(); renderTransactions(); renderFinanceSummary(); toast('Transaction removed'); });
-    ac.appendChild(del);
-  });
-  renderFinanceSummary();
-}
-function renderFinanceSummary(){
-  const income = transactions.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0);
-  const expenses = transactions.filter(t=>t.amount<0).reduce((s,t)=>s+t.amount,0) * -1;
-  const balance = income - expenses;
-  document.getElementById('finBalance').textContent = '$' + balance.toLocaleString();
-  document.getElementById('finIncome').textContent = '$' + income.toLocaleString();
-  document.getElementById('finExpenses').textContent = '-$' + expenses.toLocaleString();
-  document.getElementById('balanceDisplay').textContent = '$' + balance.toLocaleString();
-  document.getElementById('statIncome').textContent = '$' + income.toLocaleString();
-  document.getElementById('statExpenses').textContent = '-$' + expenses.toLocaleString();
-  renderFinanceChart();
-}
-document.getElementById('addTxBtn').addEventListener('click', ()=> {
-  const amt = Number(document.getElementById('tx_amount').value || 0); const note = document.getElementById('tx_note').value || '';
-  if (!amt) return toast('Enter amount');
-  transactions.push({ id: uid(), date: nowISO(), amount: amt, note, type: amt>0?'income':'expense' });
-  document.getElementById('tx_amount').value=''; document.getElementById('tx_note').value='';
-  saveAll(); renderTransactions(); toast('Transaction added'); playTone(720,'sine',0.08);
-});
-
-/* ---------- Transfers ---------- */
-function renderMarket(){
-  const el = document.getElementById('marketList'); el.innerHTML = '';
-  // create some mock market players (outside our squad)
-  const market = JSON.parse(localStorage.getItem(KEYS.transfers)) || [];
-  // show market items
-  const sampleMarket = [
-    { id: 'mkt_a', name:'Leon Costa', position:'ST', price:12000 },
-    { id: 'mkt_b', name:'Rui Mendes', position:'CM', price:9000 },
-    { id: 'mkt_c', name:'Ibrahim Sol', position:'LB', price:7000 }
-  ];
-  const list = market.length ? market : sampleMarket;
-  list.forEach(item=>{
-    const div = document.createElement('div'); div.className='transfer-card'; div.innerHTML = '<div><b>'+item.name+'</b><div class="small-muted">'+item.position+'</div></div><div><div>$'+item.price.toLocaleString()+'</div><div style="margin-top:6px"><button class="btn" data-id="'+item.id+'">Buy</button></div></div>';
-    el.appendChild(div);
-    div.querySelector('button').addEventListener('click', ()=> attemptBuy(item));
-  });
-  renderMyTransfers();
-}
-function attemptBuy(item){
-  const balance = transactions.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0) - (transactions.filter(t=>t.amount<0).reduce((s,t)=>s+t.amount,0)*-1);
-  if (balance < item.price) return toast('Not enough funds');
-  // subtract
-  transactions.push({ id: uid(), date: nowISO(), amount: -item.price, note:'Bought '+item.name, type:'expense' });
-  players.push({ id: uid(), name: item.name, position: item.position, number: null, apps:0, goals:0, assists:0, yellow:0, red:0 });
-  saveAll(); renderAll(); toast('Bought ' + item.name); playTone(880,'triangle',0.1);
-}
-function renderMyTransfers(){
-  const el = document.getElementById('myTransfers'); el.innerHTML = '';
-  const done = transactions.filter(t=>t.note && t.note.startsWith('Bought'));
-  done.forEach(t=>{
-    const div = document.createElement('div'); div.className='small-muted'; div.textContent = t.date + ' • ' + t.note + ' • $' + Math.abs(t.amount);
-    el.appendChild(div);
-  });
-}
-
-/* ---------- Admin: users & club ---------- */
-function renderUsers(){
-  const table = document.getElementById('usersTable'); table.innerHTML = '<tr><th>Username</th><th>Role</th><th>Action</th></tr>';
-  const allUsers = JSON.parse(localStorage.getItem(KEYS.users) || '[]');
-  allUsers.forEach(u=>{
-    const tr = table.insertRow(); tr.insertCell().textContent = u.username; tr.insertCell().textContent = u.role; const ac = tr.insertCell();
-    if (currentUser.role==='admin'){
-      const del = document.createElement('button'); del.className='btn danger'; del.textContent='Delete'; del.addEventListener('click', ()=> { if (!confirm('Delete user '+u.username+'?')) return; const rem = allUsers.filter(x=>x.username!==u.username); localStorage.setItem(KEYS.users, JSON.stringify(rem)); toast('User removed'); renderUsers(); });
-      ac.appendChild(del);
-    } else ac.textContent='—';
-  });
-}
-document.getElementById('createUserBtn').addEventListener('click', ()=> {
-  if (currentUser.role!=='admin') return toast('Only admin can create users');
-  const un = document.getElementById('newUserName').value.trim(); const pw = document.getElementById('newUserPass').value; const role = document.getElementById('newUserRole').value;
-  if (!un || !pw) return toast('Enter username & password');
-  const uu = JSON.parse(localStorage.getItem(KEYS.users) || '[]'); if (uu.find(x=>x.username===un)) return toast('User exists');
-  uu.push({ username:un, password:pw, role }); localStorage.setItem(KEYS.users, JSON.stringify(uu)); document.getElementById('newUserName').value=''; document.getElementById('newUserPass').value=''; toast('User created'); renderUsers();
-});
-document.getElementById('saveClubBtn').addEventListener('click', ()=> {
-  if (currentUser.role!=='admin') return toast('Only admin can edit club');
-  club.name = document.getElementById('clubName').value || club.name; club.stadium = document.getElementById('stadium').value || club.stadium; localStorage.setItem(KEYS.club, JSON.stringify(club)); toast('Club info saved'); updateSidebarClub();
-});
-
-/* ---------- Settings: export/import/clear ---------- */
-document.getElementById('exportAllBtn').addEventListener('click', ()=> {
-  const data = { players, matches, transactions, transfers, club, users: JSON.parse(localStorage.getItem(KEYS.users) || '[]') };
-  const blob = new Blob([JSON.stringify(data,null,2)], { type:'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='wandoo-united-data.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast('Exported data');
-});
-document.getElementById('importAllBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
-document.getElementById('importFile').addEventListener('change', e=> {
-  const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ()=> { try { const data = JSON.parse(r.result); if (data.players) { players = data.players; localStorage.setItem(KEYS.players, JSON.stringify(players)); } if (data.matches) { matches = data.matches; localStorage.setItem(KEYS.matches, JSON.stringify(matches)); } if (data.transactions) { transactions = data.transactions; localStorage.setItem(KEYS.transactions, JSON.stringify(transactions)); } if (data.transfers) { transfers = data.transfers; localStorage.setItem(KEYS.transfers, JSON.stringify(transfers)); } if (data.club) { club = data.club; localStorage.setItem(KEYS.club, JSON.stringify(club)); } if (data.users) { localStorage.setItem(KEYS.users, JSON.stringify(data.users)); } saveAll(); renderAll(); toast('Imported data'); } catch(e){ toast('Import failed'); } }; r.readAsText(f);
-});
-document.getElementById('clearAllBtn').addEventListener('click', ()=> { if (!confirm('Clear all data and reset to demo?')) return; localStorage.removeItem(KEYS.players); localStorage.removeItem(KEYS.matches); localStorage.removeItem(KEYS.transactions); localStorage.removeItem(KEYS.transfers); localStorage.removeItem(KEYS.pom); localStorage.removeItem(KEYS.logo); localStorage.removeItem(KEYS.user); localStorage.removeItem(KEYS.club); localStorage.removeItem(KEYS.users); location.reload(); });
-
-/* ---------- Export README ---------- */
-document.getElementById('exportReadmeBtn').addEventListener('click', ()=> {
-  const readme = `# Wandoo United FC — Club Management v2.0
-
-Single-file demo: index.html
-
-Features:
-- Squad management (starters, subs, captain, numbers)
-- Match center (goals, cards, subs, events)
-- Player stats (auto-updated)
-- Finance module (transactions + charts)
-- Transfer market (mock buy/sell)
-- Admin panel (user & club management)
-- LocalStorage persistence
-
-Install:
-1. Create repo (e.g. football-club-system)
-2. Add file index.html and paste this code
-3. Commit: "Added Wandoo United FC v2.0 — full club management single-file"
-4. Open: https://<your-username>.github.io/football-club-system/
-
-Demo users:
-- admin / 1234  (full)
-- manager / 5678
-- viewer / 0000
-
-Notes:
-- Client-side demo only. For production, implement server-side auth & database.
-`;
-  const blob = new Blob([readme], { type:'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='README-Wandoo-United-FC.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast('README exported');
-});
-
-/* ---------- Homepage functionality ---------- */
-document.getElementById('getStartedBtn').addEventListener('click', ()=> {
-  document.querySelector('.nav button[data-section="dashboard"]').click();
-});
-document.getElementById('viewDemoBtn').addEventListener('click', ()=> {
-  document.getElementById('loginUser').value='admin';
-  document.getElementById('loginPass').value='1234';
-  document.getElementById('loginBtn').click();
-  toast('Demo credentials filled');
-});
-document.getElementById('signUpBtn').addEventListener('click', ()=> {
-  toast('Sign up functionality would be implemented in a real application');
-});
-document.getElementById('learnMoreBtn').addEventListener('click', ()=> {
-  document.querySelector('.nav button[data-section="dashboard"]').click();
-});
-
-/* ---------- Background Music ---------- */
-const backgroundMusic = document.getElementById('backgroundMusic');
-const musicToggle = document.getElementById('musicToggle');
-let isMusicPlaying = false;
-
-musicToggle.addEventListener('click', () => {
-  if (isMusicPlaying) {
-    backgroundMusic.pause();
-    musicToggle.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 3V21M8 6V18M16 6V18M4 9V15M20 9V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    `;
-  } else {
-    backgroundMusic.play().catch(e => {
-      console.log('Audio play failed:', e);
-      toast('Click anywhere on the page to enable audio');
+  function renderPlayers(){
+    playerContainer.innerHTML='';
+    players.forEach((p,i)=>{
+      const card=document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>${p.name}</h3>
+                      <p>Position: ${p.position}</p>
+                      <p>Age: ${p.age}</p>
+                      <p>Goals: ${p.goals} | Assists: ${p.assists}</p>
+                      <button onclick="removePlayer(${i})">Remove</button>`;
+      playerContainer.appendChild(card);
     });
-    musicToggle.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6 14L6 10M10 14L10 6M14 14L14 10M18 14L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    `;
   }
-  isMusicPlaying = !isMusicPlaying;
-});
 
-// Enable audio on first user interaction
-document.addEventListener('click', function enableAudio() {
-  if (isMusicPlaying) {
-    backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+  function removePlayer(index){
+    if(confirm(`Remove ${players[index].name}?`)){
+      players.splice(index,1);
+      renderPlayers();
+    }
   }
-  document.removeEventListener('click', enableAudio);
-}, { once: true });
 
-/* ---------- Render functions & boot ---------- */
-function renderChartAndSummary(){ renderChart(); renderFinanceChart(); renderFinanceSummary(); }
-function renderAll(){ renderPlayers(); renderStartingList(); renderChartAndSummary(); renderMatches(); renderStatistics(); renderTransactions(); renderMarket(); renderUsers(); updateSidebarClub(); refreshAuthUI(); document.getElementById('cardGoals').textContent = players.reduce((s,p)=>s + (p.goals||0),0); document.getElementById('cardTransfers').textContent = (transactions.filter(t=>t.note && t.note.startsWith('Bought')).length || 0); }
-document.getElementById('refreshAllBtn').addEventListener('click', ()=> renderAll());
-document.getElementById('toastDemoBtn').addEventListener('click', ()=> toast('Demo toast — Wandoo United FC'));
+  renderPlayers();
 
-/* initial boot */
-renderAll();
-</script>
+  // ===== Matches =====
+  const matchForm=document.getElementById('match-form');
+  const matchTable=document.querySelector('#match-table tbody');
+  const matches=[];
+  matchForm.addEventListener('submit',e=>{
+    e.preventDefault();
+    const opponent=document.getElementById('opponent').value;
+    const date=document.getElementById('date').value;
+    const score=document.getElementById('score').value;
+    matches.push({opponent,date,score});
+    const row=document.createElement('tr');
+    row.innerHTML=`<td>${opponent}</td><td>${date}</td><td>${score}</td>`;
+    matchTable.appendChild(row);
+    matchForm.reset();
+  });
 
-</body>
-  </html>
+  // ===== Music Player with Automatic Playlist =====
+  const playlist=document.getElementById('playlist');
+  const player=document.getElementById('player');
+  let musicPlaying=true;
+
+  // Music folder manifest (update this array when adding songs)
+  const musicManifest=[
+    {title:"Wavin' Flag",artist:"K'naan",file
