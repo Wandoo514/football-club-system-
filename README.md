@@ -1,38 +1,21 @@
-# Manchester United FC - Club Management System ⚽️
+# Wandoo United FC ⚽
 
-![GitHub repo size](https://img.shields.io/github/repo-size/<your-username>/football-club-system?color=red)
-![GitHub stars](https://img.shields.io/github/stars/<your-username>/football-club-system?style=social)
-![GitHub forks](https://img.shields.io/github/forks/<your-username>/football-club-system?style=social)
-![GitHub issues](https://img.shields.io/github/issues/<your-username>/football-club-system)
-![GitHub license](https://img.shields.io/github/license/<your-username>/football-club-system)
+This is the official website for Wandoo United FC — featuring Squad Management, Match Records, Live Match Simulation, Stats, and Club Music.
 
-**Live Demo:** [Click Here](https://<your-username>.github.io/football-club-system/)
+## 📁 Folder Structure
+- index.html → Home
+- squad.html → Player Management
+- matches.html → Match Fixtures
+- live.html → Live Simulation
+- stats.html → Team Stats
+- music.html → Club Anthems
 
----
+## 🚀 How to Use
+1. Upload this folder to GitHub.
+2. Go to **Settings > Pages**.
+3. Select the `main` branch and `/root` folder.
+4. Wait for GitHub Pages to publish your live site.
 
-## 🌟 Project Overview
+## 🧠 Credits
+Designed for Wandoo United FC by ChatGPT.
 
-Professional **football club management web app** for Manchester United FC.  
-Interactive, functional, and Betika-style UI. Manage players, matches, live simulations, stats, and enjoy club anthems with autoplay.
-
-- ✅ Responsive & clean design  
-- ✅ Player management with stats  
-- ✅ Match scheduling & live simulation  
-- ✅ Music player with playlist & autoplay  
-
----
-
-## 📄 Pages & Features
-
-| Page | Features |
-|------|---------|
-| `index.html` | Home page: hero, feature cards |
-| `squad.html` | Player management & dashboard |
-| `matches.html` | Add/view matches |
-| `live.html` | Live match simulation |
-| `stats.html` | Player stats & highlights |
-| `music.html` | Music player with autoplay playlist |
-
----
-
-## 🗂 Folder Structure
