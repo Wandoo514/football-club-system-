@@ -5,38 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wandoo United FC - Club Management</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:Arial,sans-serif;background:#f4f4f4;overflow-x:hidden;}
-  nav{display:flex;background:#1a1a1a;color:#fff;padding:10px 20px;align-items:center;flex-wrap:wrap;}
-  nav a{color:#fff;text-decoration:none;margin-right:20px;font-weight:bold;}
-  nav a:hover{text-decoration:underline;}
-  #hero{display:flex;flex-direction:row;align-items:center;justify-content:space-between;padding:50px 20px;background:#e5f0ff;overflow:hidden;}
-  #hero-text{max-width:50%;}
-  #hero-text h1{font-size:3em;background:linear-gradient(to right,#ff416c,#ff4b2b);-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
-  #hero-text p{font-size:1.2em;margin-bottom:20px;}
-  #hero-text button{padding:10px 20px;margin-right:10px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;}
-  #get-started{background:#ff416c;color:#fff;}
-  #view-demo{background:#ff4b2b;color:#fff;}
-  #hero-image{max-width:45%;animation: float 3s ease-in-out infinite alternate;}
-  @keyframes float{0%{transform:translateY(0px);}100%{transform:translateY(-20px);}}
-  #features{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;}
-  .feature-card{background:#fff;padding:20px;border-radius:10px;width:250px;box-shadow:0 2px 10px rgba(0,0,0,0.1);opacity:0;transform:translateX(-50px);transition:all 0.5s ease;}
-  .feature-card.visible{opacity:1;transform:translateX(0);}
-  .feature-card:hover{transform:translateY(-10px);box-shadow:0 4px 15px rgba(0,0,0,0.2);}
-  main{display:flex;flex-wrap:wrap;justify-content:center;padding:20px;gap:20px;}
-  .card{background:#fff;border-radius:10px;padding:15px;width:250px;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
-  .card h3{margin-bottom:5px;}
-  .card button{margin-top:5px;padding:5px 10px;border:none;border-radius:5px;background:#ff416c;color:#fff;cursor:pointer;}
-  #music-player{position:fixed;bottom:20px;left:20px;background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.3);z-index:100;}
-  #music-toggle{display:inline-block;margin-top:10px;padding:5px 10px;background:#1a1a1a;color:#fff;border:none;border-radius:5px;cursor:pointer;}
-  h2{text-align:center;margin-bottom:20px;}
-  ul{list-style:none;padding:0;max-height:150px;overflow-y:auto;}
-  li{padding:10px;margin:5px 0;background:#eee;border-radius:5px;cursor:pointer;}
-  li:hover{background:#ddd;}
-  audio{width:100%;margin-top:10px;display:block;}
-  #match-form input,#match-form button{padding:5px;margin:5px;border-radius:5px;border:1px solid #ccc;}
-  #match-table{width:90%;margin:20px auto;border-collapse:collapse;}
-  #match-table th,#match-table td{border:1px solid #ccc;padding:10px;text-align:center;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;background:#f4f4f4;overflow-x:hidden;}
+nav{display:flex;background:#1a1a1a;color:#fff;padding:10px 20px;align-items:center;flex-wrap:wrap;}
+nav a{color:#fff;text-decoration:none;margin-right:20px;font-weight:bold;}
+nav a:hover{text-decoration:underline;}
+#hero{display:flex;flex-direction:row;align-items:center;justify-content:space-between;padding:50px 20px;background:#e5f0ff;overflow:hidden;flex-wrap:wrap;}
+#hero-text{max-width:50%;}
+#hero-text h1{font-size:3em;background:linear-gradient(to right,#ff416c,#ff4b2b);-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
+#hero-text p{font-size:1.2em;margin-bottom:20px;}
+#hero-text button{padding:10px 20px;margin-right:10px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;}
+#get-started{background:#ff416c;color:#fff;}
+#view-demo{background:#ff4b2b;color:#fff;}
+#hero-image{max-width:45%;animation: float 3s ease-in-out infinite alternate;}
+@keyframes float{0%{transform:translateY(0px);}100%{transform:translateY(-20px);}}
+#features{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;}
+.feature-card{background:#fff;padding:20px;border-radius:10px;width:250px;box-shadow:0 2px 10px rgba(0,0,0,0.1);opacity:0;transform:translateX(-50px);transition:all 0.5s ease;}
+.feature-card.visible{opacity:1;transform:translateX(0);}
+.feature-card:hover{transform:translateY(-10px);box-shadow:0 4px 15px rgba(0,0,0,0.2);}
+main{display:flex;flex-wrap:wrap;justify-content:center;padding:20px;gap:20px;}
+.card{background:#fff;border-radius:10px;padding:15px;width:250px;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+.card h3{margin-bottom:5px;}
+.card p{margin-bottom:5px;}
+.card button{margin-top:5px;padding:5px 10px;border:none;border-radius:5px;background:#ff416c;color:#fff;cursor:pointer;}
+#music-player{position:fixed;bottom:20px;left:20px;background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.3);z-index:100;width:300px;}
+#music-toggle{display:inline-block;margin-top:10px;padding:5px 10px;background:#1a1a1a;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+h2{text-align:center;margin-bottom:20px;}
+ul{list-style:none;padding:0;max-height:150px;overflow-y:auto;}
+li{padding:10px;margin:5px 0;background:#eee;border-radius:5px;cursor:pointer;}
+li:hover{background:#ddd;}
+audio{width:100%;margin-top:10px;display:block;}
+#match-form input,#match-form button,#player-form input,#player-form select,#simulate-form input,#simulate-form button{padding:5px;margin:5px;border-radius:5px;border:1px solid #ccc;}
+#match-table,#dashboard-table,#live-match-table{width:90%;margin:20px auto;border-collapse:collapse;}
+#match-table th,#match-table td,#dashboard-table th,#dashboard-table td,#live-match-table th,#live-match-table td{border:1px solid #ccc;padding:10px;text-align:center;}
+#live-match{background:#fff;padding:15px;border-radius:10px;width:90%;margin:20px auto;box-shadow:0 2px 10px rgba(0,0,0,0.2);}
 </style>
 </head>
 <body>
@@ -46,13 +48,14 @@
   <a href="#features">Features</a>
   <a href="#players">Players</a>
   <a href="#matches">Matches</a>
+  <a href="#dashboard">Dashboard</a>
   <a href="#music-player">Music</a>
 </nav>
 
 <section id="hero">
   <div id="hero-text">
     <h1>Wandoo United FC</h1>
-    <p>Manage your football club efficiently with stats, player management, matches, and music!</p>
+    <p>Manage your football club efficiently with stats, player management, matches, substitutes, music, and live match simulation!</p>
     <button id="get-started">Get Started</button>
     <button id="view-demo">View Demo</button>
   </div>
@@ -68,11 +71,27 @@
 <section id="features">
   <div class="feature-card">Dynamic Player Management</div>
   <div class="feature-card">Match Scheduling & Results</div>
+  <div class="feature-card">Substitute Player Management</div>
   <div class="feature-card">Stats & Analytics Dashboard</div>
-  <div class="feature-card">Responsive & Modern Design</div>
+  <div class="feature-card">Live Match Simulation</div>
 </section>
 
-<main id="players"></main>
+<section id="players">
+<h2>Players & Substitutes</h2>
+<form id="player-form">
+  <input type="text" id="player-name" placeholder="Name" required>
+  <input type="text" id="player-position" placeholder="Position" required>
+  <input type="number" id="player-age" placeholder="Age" required>
+  <input type="number" id="player-goals" placeholder="Goals" value="0">
+  <input type="number" id="player-assists" placeholder="Assists" value="0">
+  <select id="player-sub">
+    <option value="false">Main</option>
+    <option value="true">Substitute</option>
+  </select>
+  <button type="submit">Add Player</button>
+</form>
+<main id="player-container"></main>
+</section>
 
 <section id="matches">
 <h2>Club Matches</h2>
@@ -90,6 +109,35 @@
 </table>
 </section>
 
+<section id="live-match">
+<h2>Live Match Simulation</h2>
+<form id="simulate-form">
+  <input type="text" id="sim-opponent" placeholder="Opponent" required>
+  <button type="submit">Start Match</button>
+</form>
+<p id="match-timer">Match Time: 0'</p>
+<ul id="event-log"></ul>
+<table id="live-match-table">
+  <thead>
+    <tr><th>Team</th><th>Score</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Wandoo United</td><td id="score-us">0</td></tr>
+    <tr><td>Opponent</td><td id="score-opponent">0</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="dashboard">
+<h2>Club Dashboard</h2>
+<table id="dashboard-table">
+  <thead>
+    <tr><th>Player</th><th>Goals</th><th>Assists</th><th>Status</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</section>
+
 <div id="music-player">
   <h2>🎶 Football Anthems</h2>
   <ul id="playlist"></ul>
@@ -98,67 +146,219 @@
 </div>
 
 <script>
-  // ===== Kenyan Squad with Stats & Edit =====
-  let players = [
-    {name:"Victor Wanyama",position:"Midfielder",age:30,goals:5,assists:7},
-    {name:"Michael Olunga",position:"Forward",age:27,goals:15,assists:6},
-    {name:"Eric Johana",position:"Defender",age:25,goals:1,assists:2},
-    {name:"Arnold Origi",position:"Goalkeeper",age:34,goals:0,assists:0},
-    {name:"Clinton N'Jie",position:"Forward",age:26,goals:10,assists:4},
-    {name:"Eric Ouma",position:"Defender",age:23,goals:0,assists:1},
-    {name:"Joash Onyango",position:"Defender",age:24,goals:2,assists:1},
-    {name:"Aboud Omar",position:"Defender",age:28,goals:1,assists:3},
-    {name:"Dennis Oliech",position:"Forward",age:32,goals:12,assists:5},
-    {name:"McDonald Mariga",position:"Midfielder",age:31,goals:3,assists:6},
-    {name:"Patrick Matasi",position:"Goalkeeper",age:29,goals:0,assists:0}
-  ];
+let players=[
+  {name:"Victor Wanyama",position:"Midfielder",age:30,goals:5,assists:7,sub:false},
+  {name:"Michael Olunga",position:"Forward",age:27,goals:15,assists:6,sub:false},
+  {name:"Eric Johana",position:"Defender",age:25,goals:1,assists:2,sub:false},
+  {name:"Arnold Origi",position:"Goalkeeper",age:34,goals:0,assists:0,sub:false},
+  {name:"Clinton N'Jie",position:"Forward",age:26,goals:10,assists:4,sub:false},
+  {name:"Eric Ouma",position:"Defender",age:23,goals:0,assists:1,sub:true},
+  {name:"Joash Onyango",position:"Defender",age:24,goals:2,assists:1,sub:false},
+  {name:"Aboud Omar",position:"Defender",age:28,goals:1,assists:3,sub:true},
+  {name:"Dennis Oliech",position:"Forward",age:32,goals:12,assists:5,sub:false},
+  {name:"McDonald Mariga",position:"Midfielder",age:31,goals:3,assists:6,sub:true},
+  {name:"Patrick Matasi",position:"Goalkeeper",age:29,goals:0,assists:0,sub:false}
+];
 
-  const playerContainer=document.getElementById('players');
+const playerContainer=document.getElementById('player-container');
+const dashboardTable=document.querySelector('#dashboard-table tbody');
+const matchTable=document.querySelector('#match-table tbody');
+const eventLog=document.getElementById('event-log');
+const matchTimerDisplay=document.getElementById('match-timer');
+const scoreUsDisplay=document.getElementById('score-us');
+const scoreOpponentDisplay=document.getElementById('score-opponent');
+let matches=[];
 
-  function renderPlayers(){
-    playerContainer.innerHTML='';
-    players.forEach((p,i)=>{
-      const card=document.createElement('div');
-      card.className='card';
-      card.innerHTML=`<h3>${p.name}</h3>
-                      <p>Position: ${p.position}</p>
-                      <p>Age: ${p.age}</p>
-                      <p>Goals: ${p.goals} | Assists: ${p.assists}</p>
-                      <button onclick="removePlayer(${i})">Remove</button>`;
-      playerContainer.appendChild(card);
-    });
-  }
-
-  function removePlayer(index){
-    if(confirm(`Remove ${players[index].name}?`)){
-      players.splice(index,1);
-      renderPlayers();
-    }
-  }
-
-  renderPlayers();
-
-  // ===== Matches =====
-  const matchForm=document.getElementById('match-form');
-  const matchTable=document.querySelector('#match-table tbody');
-  const matches=[];
-  matchForm.addEventListener('submit',e=>{
-    e.preventDefault();
-    const opponent=document.getElementById('opponent').value;
-    const date=document.getElementById('date').value;
-    const score=document.getElementById('score').value;
-    matches.push({opponent,date,score});
-    const row=document.createElement('tr');
-    row.innerHTML=`<td>${opponent}</td><td>${date}</td><td>${score}</td>`;
-    matchTable.appendChild(row);
-    matchForm.reset();
+// ===== Players Management =====
+function renderPlayers(){
+  playerContainer.innerHTML='';
+  players.forEach((p,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${p.name}</h3>
+                    <p>Position: ${p.position}</p>
+                    <p>Age: ${p.age}</p>
+                    <p>Goals: ${p.goals} | Assists: ${p.assists}</p>
+                    <p>Status: ${p.sub?'Substitute':'Main'}</p>
+                    <button onclick="removePlayer(${i})">Remove</button>`;
+    playerContainer.appendChild(card);
   });
+  renderDashboard();
+}
 
-  // ===== Music Player with Automatic Playlist =====
-  const playlist=document.getElementById('playlist');
-  const player=document.getElementById('player');
-  let musicPlaying=true;
+function removePlayer(index){
+  if(confirm(`Remove ${players[index].name}?`)){
+    players.splice(index,1);
+    renderPlayers();
+  }
+}
 
-  // Music folder manifest (update this array when adding songs)
-  const musicManifest=[
-    {title:"Wavin' Flag",artist:"K'naan",file
+document.getElementById('player-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('player-name').value;
+  const position=document.getElementById('player-position').value;
+  const age=parseInt(document.getElementById('player-age').value);
+  const goals=parseInt(document.getElementById('player-goals').value);
+  const assists=parseInt(document.getElementById('player-assists').value);
+  const sub=document.getElementById('player-sub').value==='true';
+  players.push({name,position,age,goals,assists,sub});
+  renderPlayers();
+  e.target.reset();
+});
+
+function renderDashboard(highlight=false){
+  dashboardTable.innerHTML='';
+  const maxGoals=Math.max(...players.map(p=>p.goals));
+  const maxAssists=Math.max(...players.map(p=>p.assists));
+  players.forEach(p=>{
+    const row=document.createElement('tr');
+    let style='';
+    if(highlight){
+      if(p.goals===maxGoals) style+='background:#ffeaa7;';
+      if(p.assists===maxAssists) style+='background:#dff9fb;';
+    }
+    row.innerHTML=`<td>${p.name}</td><td>${p.goals}</td><td>${p.assists}</td><td>${p.sub?'Substitute':'Main'}</td>`;
+    row.style.cssText=style;
+    dashboardTable.appendChild(row);
+  });
+}
+
+renderPlayers();
+
+// ===== Matches Management =====
+document.getElementById('match-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const opponent=document.getElementById('opponent').value;
+  const date=document.getElementById('date').value;
+  const score=document.getElementById('score').value;
+  matches.push({opponent,date,score});
+  const row=document.createElement('tr');
+  row.innerHTML=`<td>${opponent}</td><td>${date}</td><td>${score}</td>`;
+  matchTable.appendChild(row);
+  e.target.reset();
+});
+
+// ===== Music Player Auto-Play =====
+const playlist=document.getElementById('playlist');
+const playerAudio=document.getElementById('player');
+let musicPlaying=true;
+const musicManifest=[
+  {title:"Wavin' Flag",artist:"K'naan",file:"music/wavin_flag.mp3"},
+  {title:"Sweet Victory",artist:"David Glen Eisley",file:"music/sweet_victory.mp3"},
+  {title:"We Will Rock You",artist:"Queen",file:"music/we_will_rock_you.mp3"}
+];
+
+musicManifest.forEach((song,index)=>{
+  const li=document.createElement('li');
+  li.textContent=`${song.title} - ${song.artist}`;
+  li.addEventListener('click',()=>{
+    playerAudio.src=song.file;
+    playerAudio.play();
+    musicPlaying=true;
+  });
+  playlist.appendChild(li);
+
+  if(index===0){ // Auto-play first song
+    playerAudio.src=song.file;
+    playerAudio.autoplay=true;
+    playerAudio.loop=true;
+    playerAudio.muted=true;
+    playerAudio.play().then(()=>{playerAudio.muted=false;}).catch(()=>{});
+  }
+});
+
+document.getElementById('music-toggle').addEventListener('click',()=>{
+  if(musicPlaying){playerAudio.pause();musicPlaying=false;}
+  else{playerAudio.play();musicPlaying=true;}
+});
+
+// ===== Feature Card Animation =====
+const featureCards=document.querySelectorAll('.feature-card');
+window.addEventListener('scroll',()=>{
+  featureCards.forEach(card=>{
+    const rect=card.getBoundingClientRect();
+    if(rect.top<window.innerHeight-50) card.classList.add('visible');
+  });
+});
+
+// ===== Smooth Scroll =====
+document.querySelectorAll('nav a').forEach(link=>{
+  link.addEventListener('click',e=>{
+    e.preventDefault();
+    const target=document.querySelector(link.getAttribute('href'));
+    target.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+// ===== Live Match Simulation =====
+const simulateForm=document.getElementById('simulate-form');
+simulateForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  startMatch(document.getElementById('sim-opponent').value);
+});
+
+function startMatch(opponent){
+  let matchTime=0;
+  let scoreUs=0;
+  let scoreOpponent=0;
+  eventLog.innerHTML='';
+  scoreUsDisplay.textContent=0;
+  scoreOpponentDisplay.textContent=0;
+
+  const interval=setInterval(()=>{
+    matchTime++;
+    matchTimerDisplay.textContent=`Match Time: ${matchTime}'`;
+
+    if(Math.random()<0.3){
+      const mainPlayers=players.filter(p=>!p.sub);
+      const scorer=mainPlayers[Math.floor(Math.random()*mainPlayers.length)];
+      const assister=mainPlayers[Math.floor(Math.random()*mainPlayers.length)];
+      scorer.goals++;
+      assister.assists++;
+      scoreUs++;
+      const li=document.createElement('li');
+      li.textContent=`GOAL! ${scorer.name} scores (assisted by ${assister.name})!`;
+      eventLog.appendChild(li);
+      scoreUsDisplay.textContent=scoreUs;
+      renderDashboard(true);
+    }
+
+    if(Math.random()<0.1){
+      scoreOpponent++;
+      const li=document.createElement('li');
+      li.textContent=`Opponent scores!`;
+      eventLog.appendChild(li);
+      scoreOpponentDisplay.textContent=scoreOpponent;
+    }
+
+    if(Math.random()<0.05){
+      const subPlayers=players.filter(p=>p.sub);
+      const mainPlayers=players.filter(p=>!p.sub);
+      if(subPlayers.length>0){
+        const subIn=subPlayers[Math.floor(Math.random()*subPlayers.length)];
+        const subOut=mainPlayers[Math.floor(Math.random()*mainPlayers.length)];
+        subIn.sub=false;
+        subOut.sub=true;
+        const li=document.createElement('li');
+        li.textContent=`Substitution: ${subOut.name} OUT, ${subIn.name} IN`;
+        eventLog.appendChild(li);
+        renderPlayers();
+      }
+    }
+
+    if(matchTime>=90){
+      clearInterval(interval);
+      matches.push({opponent,date:new Date().toLocaleDateString(),score:`${scoreUs}-${scoreOpponent}`});
+      const row=document.createElement('tr');
+      row.innerHTML=`<td>${opponent}</td><td>${new Date().toLocaleDateString()}</td><td>${scoreUs}-${scoreOpponent}</td>`;
+      matchTable.appendChild(row);
+      const li=document.createElement('li');
+      li.textContent=`Match ended! Final score: Wandoo United ${scoreUs} - ${scoreOpponent} ${opponent}`;
+      eventLog.appendChild(li);
+    }
+
+  },500); // Fast simulation for demo
+}
+</script>
+</body>
+   </html>
