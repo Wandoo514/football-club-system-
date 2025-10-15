@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manchester United FC - Matches</title>
-<link rel="stylesheet" href="css/matches.css">
-</head>
-<body>
+<form id="match-form">
+  <input type="text" id="opponent" placeholder="Opponent" required>
+  <input type="date" id="date" required>
+  <input type="text" id="score" placeholder="Score" required>
+  <button type="submit">Add Match</button>
+</form>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="squad.html">Squad</a>
-  <a href="matches.html">Matches</a>
-  <a href="live.html">Live Match</a>
-  <a href="stats.html">Stats</a>
-  <a href="music.html">Music</a>
-</nav>
-
-<section class="page-section">
-  <h2>Club Matches</h2>
-  <form id="match-form" class="form-card">
-    <input type="text" id="opponent" placeholder="Opponent" required>
-    <input type="date" id="date" required>
-    <input type="text" id="score" placeholder="Score" required>
-    <button type="submit">Add Match</button>
-  </form>
-
-  <table id="match-table">
-    <thead>
-      <tr><th>Opponent</th><th>Date</th><th>Score</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</section>
-
-<script src="js/matches.js"></script>
-</body>
-</html>
+<table id="match-table">
+  <thead>
+    <tr><th>Opponent</th><th>Date</th><th>Score</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
