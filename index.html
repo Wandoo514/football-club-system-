@@ -1,32 +1,428 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Football Club Management System</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; margin-top: 20px; }
-    h1 { color: #2c3e50; }
-    form { margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    input, select { width: 90%; padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #2ecc71; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 10px; }
-    ul { list-style: none; padding: 0; }
-    li { background: #fff; margin: 10px auto; padding: 10px; width: 90%; max-width: 400px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    li button { background: red; border: none; color: #fff; padding: 5px 10px; border-radius: 5px; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Football Club System — v3.0 (Roles)</title>
+<style>
+  :root{--primary:#1abc9c;--sec:#2980b9;--dark:#2c3e50;--light:#ecf0f1;--danger:#e74c3c;}
+  *{box-sizing:border-box;font-family:Poppins,system-ui,Arial;transition:all .25s}
+  body{margin:0;background:var(--light);color:var(--dark)}
+  header{background:linear-gradient(120deg,var(--primary),var(--sec));color:#fff;padding:22px;text-align:center}
+  nav{display:flex;flex-wrap:wrap;justify-content:center;background:#fff;padding:10px;gap:8px}
+  nav button{background:var(--sec);color:#fff;padding:9px 16px;border-radius:20px;border:0;cursor:pointer}
+  nav button:hover{background:var(--primary)}
+  .container{padding:18px}
+  section{display:none;padding:6px 0;animation:fade 0.35s}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card{background:#fff;padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.05);margin:10px auto;max-width:980px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+  th{background:var(--primary);color:#fff}
+  .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+  .danger{background:var(--danger);color:#fff}
+  .edit{background:var(--sec);color:#fff}
+  .success{background:var(--primary);color:#fff}
+  .search{width:100%;padding:10px;border-radius:12px;border:1px solid #ddd;margin:10px 0}
+  form input, form select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;max-width:980px;margin:0 auto}
+  .role-badge{background:#fff;color:var(--dark);padding:6px 10px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+  #toast{position:fixed;right:20px;bottom:20px;background:var(--primary);color:#fff;padding:12px 18px;border-radius:20px;display:none}
+  .muted{color:#666;font-size:13px}
+  @media(min-width:900px){.grid{display:grid;grid-template-columns:1fr 360px;gap:14px}}
+</style>
 </head>
 <body>
-  <h1>⚽ Football Club Management System ⚽</h1>
+<header>
+  <h1>⚽ Football Club Management System — v3.0</h1>
+  <p class="muted">Multi-user roles: admin, manager, viewer (client-side demo)</p>
+</header>
 
-  <form id="playerForm">
-    <input type="text" id="name" placeholder="Player Name">
-    <input type="text" id="position" placeholder="Position">
-    <input type="number" id="age" placeholder="Age">
-    <button type="submit">Add Player</button>
-  </form>
+<nav id="nav">
+  <button onclick="show('home')">🏠 Home</button>
+  <button onclick="show('players')">🏃 Players</button>
+  <button onclick="show('addPlayer')">➕ Add Player</button>
+  <button onclick="show('matches')">📅 Matches</button>
+  <div id="authButtons" style="display:inline-flex;gap:8px"></div>
+</nav>
 
-  <ul id="playerList"></ul>
+<div class="container">
+  <div class="topbar">
+    <div class="muted">Signed in as: <span id="currentUser">Guest</span></div>
+    <div class="role-badge" id="roleBadge">Role: none</div>
+  </div>
 
-  <script src="script.js"></script>
+  <div class="grid">
+    <div>
+      <!-- HOME -->
+      <section id="home" class="card">
+        <h2>Welcome</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:160px" class="card">
+            <h3 id="statPlayers">0</h3><div class="muted">Total players</div>
+          </div>
+          <div style="flex:1;min-width:160px" class="card">
+            <h3 id="statGoals">0</h3><div class="muted">Total goals</div>
+          </div>
+          <div style="flex:1;min-width:160px" class="card">
+            <h3 id="statPOM">—</h3><div class="muted">Player of the Month</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLAYERS -->
+      <section id="players" class="card">
+        <h2>Players</h2>
+        <input id="search" class="search" placeholder="Search by name or position">
+        <table id="playerTable">
+          <tr><th>Name</th><th>Position</th><th>Age</th><th>Goals</th><th>Action</th></tr>
+        </table>
+      </section>
+
+      <!-- ADD PLAYER -->
+      <section id="addPlayer" class="card">
+        <h2>Add Player</h2>
+        <form id="playerForm">
+          <input id="p_name" placeholder="Player name" required>
+          <select id="p_position" required>
+            <option value="">Select position</option>
+            <option>Goalkeeper</option><option>Defender</option><option>Midfielder</option><option>Striker</option>
+          </select>
+          <input id="p_age" type="number" placeholder="Age" required>
+          <input id="p_goals" type="number" placeholder="Goals scored" value="0" required>
+          <div style="display:flex;gap:8px">
+            <button class="btn success" type="submit">Add Player</button>
+            <button class="btn" type="button" onclick="document.getElementById('playerForm').reset()">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- MATCHES -->
+      <section id="matches" class="card">
+        <h2>Matches</h2>
+        <table id="matchTable">
+          <tr><th>Date</th><th>Team A</th><th>Team B</th><th>Score</th><th>Action</th></tr>
+        </table>
+        <div style="margin-top:10px">
+          <button class="btn" onclick="openAddMatch()">➕ Add Match</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- RIGHT COLUMN: AUTH / POM / LOGIN -->
+    <div>
+      <div id="authCard" class="card">
+        <h3 id="authTitle">Login / Switch User</h3>
+        <div id="loginForm">
+          <input id="u_name" placeholder="Username" />
+          <input id="u_pass" placeholder="Password" type="password" />
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn success" onclick="login()">Login</button>
+            <button class="btn" onclick="fillDemo()">Fill demo</button>
+          </div>
+          <p class="muted" style="margin-top:10px">Default demo users (client-only):<br>
+            admin / 1234 (admin) • manager / 2345 (manager) • viewer / 3456 (viewer)</p>
+        </div>
+
+        <div id="loggedInActions" style="display:none">
+          <div class="muted">Welcome, <strong id="welcomeName"></strong></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn" id="logoutBtn" onclick="logout()">Logout</button>
+            <button class="btn" id="impersonateBtn" onclick="impersonateMenu()">Switch User</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="pomCard" class="card">
+        <h3>Player of the Month</h3>
+        <div id="pomList" style="display:flex;flex-direction:column;gap:8px"></div>
+        <div style="margin-top:8px">
+          <button class="btn" onclick="autoSelectPOM()">Auto select top scorer</button>
+          <button class="btn" onclick="clearPOM()">Clear</button>
+        </div>
+      </div>
+
+      <div id="manageMatchesCard" class="card">
+        <h3>Manage Matches</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="renderMatches()">Refresh matches</button>
+          <button class="btn" onclick="openAddMatch()">Add match</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:12px;background:#fff"><small class="muted">Client-side demo • data saved locally in your browser</small></footer>
+
+<div id="toast"></div>
+
+<!-- MODALS (simple) -->
+<div id="matchModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.45);align-items:center;justify-content:center">
+  <div style="width:92%;max-width:520px;background:#fff;border-radius:12px;padding:16px">
+    <h3 id="mmTitle">Add match</h3>
+    <input id="m_date" type="date" />
+    <input id="m_teamA" placeholder="Team A" />
+    <input id="m_teamB" placeholder="Team B" />
+    <input id="m_score" placeholder="Score (e.g. 2-1)" />
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn success" onclick="saveMatch()">Save</button>
+      <button class="btn" onclick="closeMatchModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* -------------------------
+   USERS and Authentication
+   -------------------------
+   - client-side demo users are stored in-memory with plaintext passwords
+   - for demo: admin/1234, manager/2345, viewer/3456
+   - login state saved in localStorage key 'fc_currentUser'
+   - role checks performed before any modifying action
+*/
+const demoUsers = [
+  { username: 'admin', password: '1234', role: 'admin' },
+  { username: 'manager', password: '2345', role: 'manager' },
+  { username: 'viewer', password: '3456', role: 'viewer' }
+];
+
+// Load data
+let players = JSON.parse(localStorage.getItem('fc_players')) || [
+  { name: "John Kamau", position: "Striker", age: 22, goals: 8 },
+  { name: "Peter Otieno", position: "Goalkeeper", age: 25, goals: 0 },
+  { name: "Alex Wekesa", position: "Midfielder", age: 23, goals: 3 }
+];
+let matches = JSON.parse(localStorage.getItem('fc_matches')) || [
+  { date: "2025-10-20", teamA: "Red Lions", teamB: "Blue Sharks", score: "-" },
+  { date: "2025-10-27", teamA: "Blue Sharks", teamB: "Green Eagles", score: "-" }
+];
+
+let currentUser = JSON.parse(localStorage.getItem('fc_currentUser')) || { username:'Guest', role:'viewer' };
+
+function saveAll(){
+  localStorage.setItem('fc_players', JSON.stringify(players));
+  localStorage.setItem('fc_matches', JSON.stringify(matches));
+  localStorage.setItem('fc_currentUser', JSON.stringify(currentUser));
+}
+
+/* ---------- UI helpers ---------- */
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
+  setTimeout(()=>t.style.display='none',2000);
+}
+function show(id){
+  document.querySelectorAll('section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+  if(id==='players') renderPlayers();
+  if(id==='home') updateStats();
+  if(id==='matches') renderMatches();
+}
+
+/* ---------- Role & UI control ---------- */
+function refreshAuthUI(){
+  document.getElementById('currentUser').textContent = currentUser.username || 'Guest';
+  document.getElementById('roleBadge').textContent = 'Role: ' + (currentUser.role || 'viewer');
+  if(currentUser.username && currentUser.username !== 'Guest'){
+    document.getElementById('loginForm').style.display='none';
+    document.getElementById('loggedInActions').style.display='block';
+    document.getElementById('welcomeName').textContent = currentUser.username;
+  } else {
+    document.getElementById('loginForm').style.display='block';
+    document.getElementById('loggedInActions').style.display='none';
+  }
+
+  // show/hide add/delete UI by role
+  const canAdd = ['admin','manager'].includes(currentUser.role);
+  const canDelete = currentUser.role === 'admin';
+  document.getElementById('addPlayer').style.display = canAdd ? 'block' : 'none';
+  document.getElementById('manageMatchesCard').style.display = canAdd ? 'block' : 'none';
+  // show delete buttons while rendering players based on role (renderPlayers uses currentUser.role)
+}
+
+refreshAuthUI();
+
+/* ---------- Login / logout ---------- */
+function login(){
+  const u = document.getElementById('u_name').value.trim();
+  const p = document.getElementById('u_pass').value;
+  const found = demoUsers.find(x=>x.username===u && x.password===p);
+  if(found){
+    currentUser = { username: found.username, role: found.role };
+    saveAll();
+    refreshAuthUI();
+    toast('Welcome, ' + found.username + ' (' + found.role + ')');
+    show('home');
+  } else {
+    toast('Login failed — check credentials');
+  }
+}
+
+function logout(){
+  currentUser = { username:'Guest', role:'viewer' };
+  saveAll();
+  refreshAuthUI();
+  toast('Logged out');
+  show('home');
+}
+
+// quick fill demo
+function fillDemo(){ document.getElementById('u_name').value='admin'; document.getElementById('u_pass').value='1234'; }
+
+/* ---------- Players ---------- */
+function renderPlayers(filter=''){
+  const t = document.getElementById('playerTable');
+  t.innerHTML = '<tr><th>Name</th><th>Position</th><th>Age</th><th>Goals</th><th>Action</th></tr>';
+  const role = currentUser.role || 'viewer';
+  players.filter(p => {
+    if(!filter) return true;
+    const s = filter.toLowerCase();
+    return p.name.toLowerCase().includes(s) || p.position.toLowerCase().includes(s);
+  }).forEach((p,i)=>{
+    const row = t.insertRow();
+    const actions = [];
+    // delete only for admin
+    if(role === 'admin'){
+      actions.push(`<button class="btn danger" onclick="deletePlayer(${i})">Delete</button>`);
+    }
+    // manager cannot delete, but still can suggest edit (not implemented editing players here)
+    row.innerHTML = `<td>${p.name}</td><td>${p.position}</td><td>${p.age}</td><td>${p.goals}</td><td>${actions.join(' ')}</td>`;
+  });
+}
+
+document.getElementById('search').addEventListener('input', e=> renderPlayers(e.target.value));
+
+document.getElementById('playerForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  if(!['admin','manager'].includes(currentUser.role)){
+    return toast('Permission denied — need admin or manager to add players');
+  }
+  const name = document.getElementById('p_name').value.trim();
+  const pos = document.getElementById('p_position').value;
+  const age = Number(document.getElementById('p_age').value);
+  const goals = Number(document.getElementById('p_goals').value);
+  if(!name || !pos || !age && age!==0) return toast('Please fill all fields');
+  players.push({ name, position: pos, age, goals });
+  saveAll();
+  document.getElementById('playerForm').reset();
+  toast('Player added');
+  renderPlayers();
+  updateStats();
+  show('players');
+});
+
+function deletePlayer(index){
+  if(currentUser.role !== 'admin') return toast('Only admin can delete players');
+  const ok = confirm('Delete ' + players[index].name + '?');
+  if(!ok) return;
+  players.splice(index,1);
+  saveAll();
+  toast('Player deleted');
+  renderPlayers();
+  updateStats();
+}
+
+/* ---------- Matches ---------- */
+function renderMatches(){
+  const t = document.getElementById('matchTable');
+  t.innerHTML = '<tr><th>Date</th><th>Team A</th><th>Team B</th><th>Score</th><th>Action</th></tr>';
+  matches.forEach((m,i)=>{
+    const row = t.insertRow();
+    const canEdit = ['admin','manager'].includes(currentUser.role);
+    row.innerHTML = `<td>${m.date}</td><td>${m.teamA}</td><td>${m.teamB}</td><td>${m.score}</td>
+      <td>${canEdit ? `<button class="btn edit" onclick="updateMatchScore(${i})">Update</button>` : '<span class="muted">No edit</span>'}</td>`;
+  });
+}
+
+function openAddMatch(){
+  if(!['admin','manager'].includes(currentUser.role)) return toast('Only admin/manager can add matches');
+  document.getElementById('matchModal').style.display='flex';
+  document.getElementById('mmTitle').textContent='Add match';
+  // clear fields
+  document.getElementById('m_date').value='';
+  document.getElementById('m_teamA').value='';
+  document.getElementById('m_teamB').value='';
+  document.getElementById('m_score').value='-';
+  matchEditingIndex = -1;
+}
+
+function closeMatchModal(){ document.getElementById('matchModal').style.display='none'; }
+
+let matchEditingIndex = -1;
+function saveMatch(){
+  if(!['admin','manager'].includes(currentUser.role)) return toast('Not allowed');
+  const d=document.getElementById('m_date').value;
+  const a=document.getElementById('m_teamA').value.trim();
+  const b=document.getElementById('m_teamB').value.trim();
+  const s=document.getElementById('m_score').value.trim() || '-';
+  if(!d||!a||!b) return toast('Fill date and teams');
+  if(matchEditingIndex >= 0){
+    matches[matchEditingIndex] = { date:d, teamA:a, teamB:b, score:s };
+    toast('Match updated');
+  } else {
+    matches.push({ date:d, teamA:a, teamB:b, score:s });
+    toast('Match added');
+  }
+  saveAll(); closeMatchModal(); renderMatches();
+}
+
+function updateMatchScore(i){
+  if(!['admin','manager'].includes(currentUser.role)) return toast('Not allowed');
+  const newScore = prompt(`Enter score for ${matches[i].teamA} vs ${matches[i].teamB}`, matches[i].score);
+  if(newScore === null) return;
+  matches[i].score = newScore;
+  saveAll(); renderMatches(); updateStats(); toast('Score updated');
+}
+
+/* ---------- POM & Stats ---------- */
+function updateStats(){
+  document.getElementById('statPlayers').textContent = players.length;
+  const totalGoals = players.reduce((s,p)=>s + Number(p.goals||0), 0);
+  document.getElementById('statGoals').textContent = totalGoals;
+  const top = players.slice().sort((a,b)=>b.goals - a.goals)[0];
+  document.getElementById('statPOM').textContent = top ? top.name : '—';
+  // render small list for manual POM selection
+  const pomList = document.getElementById('pomList'); pomList.innerHTML='';
+  players.forEach((p,i)=>{
+    const btn = document.createElement('button'); btn.className='btn';
+    btn.textContent = p.name + ' ('+p.goals+')';
+    btn.onclick = ()=>{ if(currentUser.role!=='admin') return toast('Only admin can set POM'); localStorage.setItem('fc_pom', p.name); toast('POM set: '+p.name); updateStats(); };
+    pomList.appendChild(btn);
+  });
+  // show current POM
+  const curPOM = localStorage.getItem('fc_pom'); if(curPOM) document.getElementById('statPOM').textContent = curPOM;
+}
+
+function autoSelectPOM(){ if(players.length===0) return toast('No players'); const top = players.slice().sort((a,b)=>b.goals-a.goals)[0]; localStorage.setItem('fc_pom', top.name); updateStats(); toast('Auto-selected: '+top.name); }
+function clearPOM(){ localStorage.removeItem('fc_pom'); updateStats(); toast('POM cleared'); }
+
+/* ---------- impersonation (quick switch) ---------- */
+function impersonateMenu(){
+  const u = prompt('Enter username to switch (admin, manager, viewer) — Leave blank to cancel');
+  if(!u) return;
+  const found = demoUsers.find(x=>x.username===u);
+  if(!found){ toast('Unknown user'); return; }
+  // require password for security
+  const p = prompt('Enter password for ' + u);
+  if(p === null) return;
+  if(p !== found.password){ toast('Wrong password'); return; }
+  currentUser = { username: found.username, role: found.role };
+  saveAll();
+  refreshAuthUI();
+  toast('Switched to ' + found.username);
+}
+
+/* ---------- boot ---------- */
+function boot(){
+  // ensure currentUser has default role viewer if not set
+  if(!currentUser || !currentUser.role) currentUser = { username:'Guest', role:'viewer' };
+  refreshAuthUI();
+  show('home');
+  renderPlayers();
+  renderMatches();
+  updateStats();
+}
+boot();
+</script>
 </body>
-</html>
+          </html>
