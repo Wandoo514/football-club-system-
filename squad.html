@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manchester United FC - Squad</title>
+<link rel="stylesheet" href="css/squad.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="squad.html">Squad</a>
+  <a href="matches.html">Matches</a>
+  <a href="live.html">Live Match</a>
+  <a href="stats.html">Stats</a>
+  <a href="music.html">Music</a>
+</nav>
+
+<section class="page-section">
+  <h2>Players & Substitutes</h2>
+  <form id="player-form" class="form-card">
+    <input type="text" id="player-name" placeholder="Name" required>
+    <input type="text" id="player-position" placeholder="Position" required>
+    <input type="number" id="player-age" placeholder="Age" required>
+    <input type="number" id="player-goals" placeholder="Goals" value="0">
+    <input type="number" id="player-assists" placeholder="Assists" value="0">
+    <select id="player-sub">
+      <option value="false">Main</option>
+      <option value="true">Substitute</option>
+    </select>
+    <button type="submit">Add Player</button>
+  </form>
+
+  <div id="player-container" class="cards"></div>
+
+  <h2>Dashboard</h2>
+  <table id="dashboard-table">
+    <thead>
+      <tr><th>Player</th><th>Goals</th><th>Assists</th><th>Status</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script src="js/squad.js"></script>
+</body>
+</html>
