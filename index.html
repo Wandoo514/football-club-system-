@@ -1,428 +1,712 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Football Club System — v3.0 (Roles)</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Football Club Dashboard — Modern</title>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-  :root{--primary:#1abc9c;--sec:#2980b9;--dark:#2c3e50;--light:#ecf0f1;--danger:#e74c3c;}
-  *{box-sizing:border-box;font-family:Poppins,system-ui,Arial;transition:all .25s}
-  body{margin:0;background:var(--light);color:var(--dark)}
-  header{background:linear-gradient(120deg,var(--primary),var(--sec));color:#fff;padding:22px;text-align:center}
-  nav{display:flex;flex-wrap:wrap;justify-content:center;background:#fff;padding:10px;gap:8px}
-  nav button{background:var(--sec);color:#fff;padding:9px 16px;border-radius:20px;border:0;cursor:pointer}
-  nav button:hover{background:var(--primary)}
-  .container{padding:18px}
-  section{display:none;padding:6px 0;animation:fade 0.35s}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .card{background:#fff;padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.05);margin:10px auto;max-width:980px}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
-  th{background:var(--primary);color:#fff}
-  .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
-  .danger{background:var(--danger);color:#fff}
-  .edit{background:var(--sec);color:#fff}
-  .success{background:var(--primary);color:#fff}
-  .search{width:100%;padding:10px;border-radius:12px;border:1px solid #ddd;margin:10px 0}
-  form input, form select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd}
-  .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;max-width:980px;margin:0 auto}
-  .role-badge{background:#fff;color:var(--dark);padding:6px 10px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-  #toast{position:fixed;right:20px;bottom:20px;background:var(--primary);color:#fff;padding:12px 18px;border-radius:20px;display:none}
-  .muted{color:#666;font-size:13px}
-  @media(min-width:900px){.grid{display:grid;grid-template-columns:1fr 360px;gap:14px}}
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --glass: rgba(255,255,255,0.04);
+    --accent:#00d084;
+    --accent2:#2dd4bf;
+    --muted:#9aa4b2;
+    --danger:#ff6b6b;
+    --glass-2: rgba(255,255,255,0.03);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(34,197,94,0.06), transparent 8%),
+    radial-gradient(1000px 400px at 90% 90%, rgba(45,212,191,0.04), transparent 12%),
+    var(--bg);color:#e6eef6;-webkit-font-smoothing:antialiased}
+  header{padding:18px;display:flex;align-items:center;gap:12px;max-width:1100px;margin:12px auto}
+  .logo-box{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#042; font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,0.6)}
+  h1{margin:0;font-size:18px}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:12px;display:grid;grid-template-columns:260px 1fr;gap:18px}
+  /* SIDEBAR */
+  .sidebar{background:linear-gradient(180deg,var(--card),var(--glass));border-radius:12px;padding:14px;backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+  .profile{display:flex;gap:10px;align-items:center}
+  .avatar{width:56px;height:56px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .who{flex:1}
+  .who h3{margin:0;font-size:15px}
+  .who p{margin:0;color:var(--muted);font-size:13px}
+
+  .sidebar .nav{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  .nav button{background:transparent;color:#d8eef7;border:0;padding:10px 12px;border-radius:8px;text-align:left;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px}
+  .nav button.active{background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));box-shadow: inset 0 1px 0 rgba(255,255,255,0.02)}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* Main area */
+  .main{display:flex;flex-direction:column;gap:14px}
+  .cards{display:flex;gap:12px;flex-wrap:wrap}
+  .card{flex:1;min-width:180px;background:linear-gradient(180deg,var(--glass),var(--glass-2));padding:14px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.5)}
+  .card h4{margin:0;font-size:13px;color:var(--muted)}
+  .card .big{font-size:22px;margin-top:8px;color:#fff;font-weight:700}
+
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:12px}
+  .panel{background:linear-gradient(180deg,var(--glass),rgba(255,255,255,0.01));padding:14px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.45)}
+  .flex{display:flex;gap:8px;align-items:center}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px;color:#eaf6f0}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:12px}
+  .btn{padding:8px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#042;cursor:pointer;font-weight:600}
+  .btn.ghost{background:transparent;color:#cfeee4;border:1px solid rgba(255,255,255,0.03)}
+  .btn.danger{background:linear-gradient(90deg,var(--danger),#ff8474);color:#fff}
+
+  input, select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#eaf6f0}
+  .muted{color:var(--muted)}
+
+  /* toast */
+  #toast{position:fixed;right:18px;bottom:18px;background:rgba(2,6,23,0.9);color:#dffaf0;padding:10px 14px;border-radius:10px;box-shadow:0 8px 30px rgba(2,6,23,0.6);display:none;align-items:center;gap:8px}
+  #toast.play{display:flex;animation:toastIn .35s ease}
+  @keyframes toastIn{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+
+  /* responsive */
+  @media (max-width:980px){
+    .wrap{grid-template-columns:1fr; padding-bottom:60px}
+    .grid{grid-template-columns:1fr}
+    .sidebar{order:2}
+  }
+  .uploader{display:flex;gap:8px;align-items:center}
+  .logo-preview{width:56px;height:56px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center}
+  .logo-preview img{width:100%;height:100%;object-fit:cover}
+
+  .chart-wrap{height:220px;display:flex;align-items:center}
+  .pill{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-weight:600;color:#eaf6f0}
+  .toast-sound{display:none}
 </style>
 </head>
 <body>
+
 <header>
-  <h1>⚽ Football Club Management System — v3.0</h1>
-  <p class="muted">Multi-user roles: admin, manager, viewer (client-side demo)</p>
+  <div style="max-width:1100px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between">
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="logo-box">FC</div>
+      <div>
+        <h1>Football Club Dashboard</h1>
+        <div class="sub">Modern dashboard — demo (client-side)</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div id="topRole" class="pill">Guest</div>
+      <div id="topUser" class="small muted">Not signed in</div>
+    </div>
+  </div>
 </header>
 
-<nav id="nav">
-  <button onclick="show('home')">🏠 Home</button>
-  <button onclick="show('players')">🏃 Players</button>
-  <button onclick="show('addPlayer')">➕ Add Player</button>
-  <button onclick="show('matches')">📅 Matches</button>
-  <div id="authButtons" style="display:inline-flex;gap:8px"></div>
-</nav>
-
-<div class="container">
-  <div class="topbar">
-    <div class="muted">Signed in as: <span id="currentUser">Guest</span></div>
-    <div class="role-badge" id="roleBadge">Role: none</div>
-  </div>
-
-  <div class="grid">
-    <div>
-      <!-- HOME -->
-      <section id="home" class="card">
-        <h2>Welcome</h2>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <div style="flex:1;min-width:160px" class="card">
-            <h3 id="statPlayers">0</h3><div class="muted">Total players</div>
-          </div>
-          <div style="flex:1;min-width:160px" class="card">
-            <h3 id="statGoals">0</h3><div class="muted">Total goals</div>
-          </div>
-          <div style="flex:1;min-width:160px" class="card">
-            <h3 id="statPOM">—</h3><div class="muted">Player of the Month</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PLAYERS -->
-      <section id="players" class="card">
-        <h2>Players</h2>
-        <input id="search" class="search" placeholder="Search by name or position">
-        <table id="playerTable">
-          <tr><th>Name</th><th>Position</th><th>Age</th><th>Goals</th><th>Action</th></tr>
-        </table>
-      </section>
-
-      <!-- ADD PLAYER -->
-      <section id="addPlayer" class="card">
-        <h2>Add Player</h2>
-        <form id="playerForm">
-          <input id="p_name" placeholder="Player name" required>
-          <select id="p_position" required>
-            <option value="">Select position</option>
-            <option>Goalkeeper</option><option>Defender</option><option>Midfielder</option><option>Striker</option>
-          </select>
-          <input id="p_age" type="number" placeholder="Age" required>
-          <input id="p_goals" type="number" placeholder="Goals scored" value="0" required>
-          <div style="display:flex;gap:8px">
-            <button class="btn success" type="submit">Add Player</button>
-            <button class="btn" type="button" onclick="document.getElementById('playerForm').reset()">Reset</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- MATCHES -->
-      <section id="matches" class="card">
-        <h2>Matches</h2>
-        <table id="matchTable">
-          <tr><th>Date</th><th>Team A</th><th>Team B</th><th>Score</th><th>Action</th></tr>
-        </table>
-        <div style="margin-top:10px">
-          <button class="btn" onclick="openAddMatch()">➕ Add Match</button>
-        </div>
-      </section>
+<main class="wrap">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="profile">
+      <div class="avatar" id="logoAvatar" title="Team logo">
+        <!-- logo image injected -->
+        <span id="avatarInitials" style="font-weight:700;color:#042">FC</span>
+      </div>
+      <div class="who">
+        <h3 id="userName">Guest</h3>
+        <p class="small" id="userRole">Role: viewer</p>
+      </div>
     </div>
 
-    <!-- RIGHT COLUMN: AUTH / POM / LOGIN -->
-    <div>
-      <div id="authCard" class="card">
-        <h3 id="authTitle">Login / Switch User</h3>
-        <div id="loginForm">
-          <input id="u_name" placeholder="Username" />
-          <input id="u_pass" placeholder="Password" type="password" />
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="btn success" onclick="login()">Login</button>
-            <button class="btn" onclick="fillDemo()">Fill demo</button>
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+      <div class="uploader" style="flex:1">
+        <input id="logoInput" type="file" accept="image/*" style="display:none"/>
+        <button class="btn ghost" id="uploadBtn">Upload Logo</button>
+        <div class="logo-preview" id="logoPreview" title="Uploaded logo" style="margin-left:auto"></div>
+      </div>
+    </div>
+
+    <div class="nav" style="margin-top:16px">
+      <button class="active" data-section="dashboard">📊 Dashboard</button>
+      <button data-section="players">🏃 Players</button>
+      <button data-section="matches">📅 Matches</button>
+      <button data-section="settings">⚙️ Settings</button>
+    </div>
+
+    <div style="margin-top:12px">
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="loginOpenBtn">Sign in</button>
+        <button class="btn ghost" id="logoutBtn" style="display:none">Sign out</button>
+      </div>
+      <p class="small muted" style="margin-top:8px">Demo users: admin/1234 • manager/2345 • viewer/3456</p>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <section class="main">
+    <!-- CARDS -->
+    <div class="cards">
+      <div class="card">
+        <h4>Total players</h4>
+        <div class="big" id="cardPlayers">0</div>
+        <div class="muted small">Live count of registered players</div>
+      </div>
+      <div class="card">
+        <h4>Total goals</h4>
+        <div class="big" id="cardGoals">0</div>
+        <div class="muted small">Sum of all goals</div>
+      </div>
+      <div class="card">
+        <h4>Player of the month</h4>
+        <div class="big" id="cardPOM">—</div>
+        <div class="muted small">Auto-select top scorer or set manually</div>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid">
+      <!-- LEFT: players / matches / dashboard content -->
+      <div>
+        <!-- DASHBOARD -->
+        <div id="section-dashboard" class="panel" style="display:block">
+          <h3>Overview</h3>
+          <div class="chart-wrap card">
+            <canvas id="goalsChart"></canvas>
           </div>
-          <p class="muted" style="margin-top:10px">Default demo users (client-only):<br>
-            admin / 1234 (admin) • manager / 2345 (manager) • viewer / 3456 (viewer)</p>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" id="autoPOM">Auto-select POM</button>
+            <button class="btn ghost" id="clearPOM">Clear POM</button>
+          </div>
         </div>
 
-        <div id="loggedInActions" style="display:none">
-          <div class="muted">Welcome, <strong id="welcomeName"></strong></div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-            <button class="btn" id="logoutBtn" onclick="logout()">Logout</button>
-            <button class="btn" id="impersonateBtn" onclick="impersonateMenu()">Switch User</button>
+        <!-- PLAYERS -->
+        <div id="section-players" class="panel" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h3>Players</h3>
+            <div style="display:flex;gap:8px">
+              <input id="search" placeholder="Search by name or position" />
+              <button class="btn ghost" id="refreshPlayers">Refresh</button>
+            </div>
+          </div>
+          <table id="playersTable">
+            <tr><th>Name</th><th>Position</th><th>Age</th><th>Goals</th><th>Action</th></tr>
+          </table>
+
+          <div style="margin-top:12px" id="addPlayerWrap">
+            <h4>Add Player</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <input id="p_name" placeholder="Name" />
+              <input id="p_position" placeholder="Position" />
+              <input id="p_age" placeholder="Age" type="number" />
+              <input id="p_goals" placeholder="Goals" type="number" />
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="btn" id="addPlayerBtn">Add player</button>
+              <button class="btn ghost" id="resetPlayerBtn">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MATCHES -->
+        <div id="section-matches" class="panel" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3>Matches</h3>
+            <button class="btn" id="toggleAddMatch">➕ Add match</button>
+          </div>
+
+          <table id="matchesTable">
+            <tr><th>Date</th><th>Team A</th><th>Team B</th><th>Score</th><th>Action</th></tr>
+          </table>
+
+          <div id="addMatchWrap" style="display:none;margin-top:10px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <input id="m_date" type="date" />
+              <input id="m_teamA" placeholder="Team A" />
+              <input id="m_teamB" placeholder="Team B" />
+              <input id="m_score" placeholder="Score (e.g. 2-1)" />
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="btn" id="addMatchBtn">Save Match</button>
+              <button class="btn ghost" id="cancelAddMatch">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="section-settings" class="panel" style="display:none">
+          <h3>Settings</h3>
+          <div class="muted small">Local demo settings — for production move to a secure backend</div>
+          <div style="margin-top:10px">
+            <label class="small muted">Stored Data</label>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn ghost" id="exportBtn">Export JSON</button>
+              <button class="btn ghost" id="importBtn">Import JSON</button>
+              <button class="btn danger" id="clearBtn">Clear all</button>
+            </div>
+            <input type="file" id="importFile" accept="application/json" style="display:none" />
           </div>
         </div>
       </div>
 
-      <div id="pomCard" class="card">
-        <h3>Player of the Month</h3>
-        <div id="pomList" style="display:flex;flex-direction:column;gap:8px"></div>
-        <div style="margin-top:8px">
-          <button class="btn" onclick="autoSelectPOM()">Auto select top scorer</button>
-          <button class="btn" onclick="clearPOM()">Clear</button>
+      <!-- RIGHT: small widgets -->
+      <aside>
+        <div class="panel">
+          <h4>Account</h4>
+          <div id="authBox">
+            <div id="loginForm">
+              <input id="loginUser" placeholder="username" />
+              <input id="loginPass" placeholder="password" type="password" />
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn" id="loginBtn">Sign in</button>
+                <button class="btn ghost" id="fillDemoBtn">Fill demo</button>
+              </div>
+            </div>
+            <div id="loggedBox" style="display:none">
+              <div class="small muted">Signed in as <b id="signedName"></b></div>
+              <div class="small muted">Role: <b id="signedRole"></b></div>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn ghost" id="logoutBtn2">Sign out</button>
+                <button class="btn" id="impersonateBtn">Switch user</button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div id="manageMatchesCard" class="card">
-        <h3>Manage Matches</h3>
-        <div style="display:flex;gap:8px">
-          <button class="btn" onclick="renderMatches()">Refresh matches</button>
-          <button class="btn" onclick="openAddMatch()">Add match</button>
+        <div class="panel" style="margin-top:12px">
+          <h4>Player of the Month</h4>
+          <div id="pomList"></div>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn" id="autoPomBtn">Auto top scorer</button>
+            <button class="btn ghost" id="clearPomBtn">Clear</button>
+          </div>
         </div>
-      </div>
+
+        <div class="panel" style="margin-top:12px">
+          <h4>Quick actions</h4>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn ghost" id="refreshAll">Refresh all</button>
+            <button class="btn ghost" id="showToastDemo">Show toast</button>
+            <div class="muted small">Tip: Use admin to enable deletes and POM set</div>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
-</div>
+</section>
+</main>
 
-<footer style="text-align:center;padding:12px;background:#fff"><small class="muted">Client-side demo • data saved locally in your browser</small></footer>
+<div id="toast"><span id="toastText"></span></div>
 
-<div id="toast"></div>
-
-<!-- MODALS (simple) -->
-<div id="matchModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.45);align-items:center;justify-content:center">
-  <div style="width:92%;max-width:520px;background:#fff;border-radius:12px;padding:16px">
-    <h3 id="mmTitle">Add match</h3>
-    <input id="m_date" type="date" />
-    <input id="m_teamA" placeholder="Team A" />
-    <input id="m_teamB" placeholder="Team B" />
-    <input id="m_score" placeholder="Score (e.g. 2-1)" />
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn success" onclick="saveMatch()">Save</button>
-      <button class="btn" onclick="closeMatchModal()">Cancel</button>
-    </div>
-  </div>
-</div>
+<!-- Simple sounds via WebAudio -->
+<audio id="soundAdd" class="toast-sound"></audio>
+<audio id="soundDel" class="toast-sound"></audio>
+<audio id="soundNotify" class="toast-sound"></audio>
 
 <script>
-/* -------------------------
-   USERS and Authentication
-   -------------------------
-   - client-side demo users are stored in-memory with plaintext passwords
-   - for demo: admin/1234, manager/2345, viewer/3456
-   - login state saved in localStorage key 'fc_currentUser'
-   - role checks performed before any modifying action
-*/
-const demoUsers = [
+/* ===========================
+   Single-file Modern Dashboard
+   Client-side only demo (localStorage)
+   =========================== */
+
+const DEMO_USERS = [
   { username: 'admin', password: '1234', role: 'admin' },
   { username: 'manager', password: '2345', role: 'manager' },
   { username: 'viewer', password: '3456', role: 'viewer' }
 ];
 
-// Load data
-let players = JSON.parse(localStorage.getItem('fc_players')) || [
-  { name: "John Kamau", position: "Striker", age: 22, goals: 8 },
-  { name: "Peter Otieno", position: "Goalkeeper", age: 25, goals: 0 },
-  { name: "Alex Wekesa", position: "Midfielder", age: 23, goals: 3 }
-];
-let matches = JSON.parse(localStorage.getItem('fc_matches')) || [
-  { date: "2025-10-20", teamA: "Red Lions", teamB: "Blue Sharks", score: "-" },
-  { date: "2025-10-27", teamA: "Blue Sharks", teamB: "Green Eagles", score: "-" }
-];
+const STORAGE_KEYS = {
+  players: 'fc_players_v2',
+  matches: 'fc_matches_v2',
+  user: 'fc_user_v2',
+  pom: 'fc_pom_v2',
+  logo: 'fc_logo_v2'
+};
 
-let currentUser = JSON.parse(localStorage.getItem('fc_currentUser')) || { username:'Guest', role:'viewer' };
+// Utilities
+function uid(){ return 'id_' + Math.random().toString(36).slice(2,9) }
+function nowISO(){ return new Date().toISOString().slice(0,10) }
 
-function saveAll(){
-  localStorage.setItem('fc_players', JSON.stringify(players));
-  localStorage.setItem('fc_matches', JSON.stringify(matches));
-  localStorage.setItem('fc_currentUser', JSON.stringify(currentUser));
+// sound helpers (WebAudio simple tone)
+function playTone(freq=440, type='sine', duration=0.08){
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    o.connect(g); g.connect(ctx.destination);
+    g.gain.value = 0.0001;
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
+    setTimeout(()=>{ o.stop(); ctx.close(); }, duration*1000 + 20);
+  } catch(e){}
 }
+function soundAdd(){ playTone(740,'triangle',0.09) }
+function soundDel(){ playTone(220,'sawtooth',0.12) }
+function soundNotify(){ playTone(520,'sine',0.08) }
 
-/* ---------- UI helpers ---------- */
+// Toast
+let toastTimer = null;
 function toast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
-  setTimeout(()=>t.style.display='none',2000);
-}
-function show(id){
-  document.querySelectorAll('section').forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
-  if(id==='players') renderPlayers();
-  if(id==='home') updateStats();
-  if(id==='matches') renderMatches();
+  const el = document.getElementById('toast'); const t = document.getElementById('toastText');
+  t.textContent = msg; el.classList.add('play'); el.style.display='flex';
+  soundNotify();
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.classList.remove('play'); el.style.display='none'; }, 2500);
 }
 
-/* ---------- Role & UI control ---------- */
+// Load/Save storage
+function load(key, fallback){ try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback } catch(e){ return fallback } }
+function save(key, val){ localStorage.setItem(key, JSON.stringify(val)) }
+
+// Initial data
+let players = load(STORAGE_KEYS.players, [
+  { id: uid(), name: "John Kamau", position: "Striker", age: 22, goals: 8 },
+  { id: uid(), name: "Peter Otieno", position: "Goalkeeper", age: 25, goals: 0 },
+  { id: uid(), name: "Alex Wekesa", position: "Midfielder", age: 23, goals: 3 }
+]);
+let matches = load(STORAGE_KEYS.matches, [
+  { id: uid(), date: "2025-10-20", teamA: "Red Lions", teamB: "Blue Sharks", score: "-" },
+  { id: uid(), date: "2025-10-27", teamA: "Blue Sharks", teamB: "Green Eagles", score: "-" }
+]);
+let currentUser = load(STORAGE_KEYS.user, { username: 'Guest', role: 'viewer' });
+let POM = localStorage.getItem(STORAGE_KEYS.pom) || null;
+let teamLogo = localStorage.getItem(STORAGE_KEYS.logo) || null;
+
+/* ========= UI elements ========= */
+const sections = document.querySelectorAll('[data-section], #section-dashboard, #section-players, #section-matches, #section-settings');
+const navButtons = document.querySelectorAll('.nav button');
+const topUser = document.getElementById('topUser');
+const topRole = document.getElementById('topRole');
+const userNameEl = document.getElementById('userName');
+const userRoleEl = document.getElementById('userRole');
+const logoPreview = document.getElementById('logoPreview');
+const avatarInitials = document.getElementById('avatarInitials');
+const logoAvatar = document.getElementById('logoAvatar');
+
+/* ===== Navigation handling ===== */
+document.querySelectorAll('.nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=> {
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const s = btn.getAttribute('data-section');
+    showSection(s);
+  });
+});
+function showSection(name){
+  // hide all
+  ['dashboard','players','matches','settings'].forEach(k=>{
+    document.getElementById('section-' + k).style.display = 'none';
+  });
+  document.getElementById('section-' + name).style.display = 'block';
+}
+
+/* ===== Auth UI ===== */
 function refreshAuthUI(){
-  document.getElementById('currentUser').textContent = currentUser.username || 'Guest';
-  document.getElementById('roleBadge').textContent = 'Role: ' + (currentUser.role || 'viewer');
-  if(currentUser.username && currentUser.username !== 'Guest'){
-    document.getElementById('loginForm').style.display='none';
-    document.getElementById('loggedInActions').style.display='block';
-    document.getElementById('welcomeName').textContent = currentUser.username;
-  } else {
-    document.getElementById('loginForm').style.display='block';
-    document.getElementById('loggedInActions').style.display='none';
-  }
+  document.getElementById('signedName').textContent = currentUser.username || 'Guest';
+  document.getElementById('signedRole').textContent = currentUser.role || 'viewer';
+  topUser.textContent = currentUser.username || 'Guest';
+  topRole.textContent = (currentUser.role || 'viewer').toUpperCase();
 
-  // show/hide add/delete UI by role
+  userNameEl.textContent = currentUser.username === 'Guest' ? 'Guest' : currentUser.username;
+  userRoleEl.textContent = 'Role: ' + (currentUser.role || 'viewer');
+
+  // show/hide login controls
+  const logged = currentUser && currentUser.username && currentUser.username !== 'Guest';
+  document.getElementById('loginForm').style.display = logged ? 'none' : 'block';
+  document.getElementById('loggedBox').style.display = logged ? 'block' : 'none';
+  document.getElementById('logoutBtn').style.display = logged ? 'inline-block' : 'none';
+  document.getElementById('logoutBtn2').style.display = logged ? 'inline-block' : 'none';
+
+  // role-based UI changes
   const canAdd = ['admin','manager'].includes(currentUser.role);
   const canDelete = currentUser.role === 'admin';
-  document.getElementById('addPlayer').style.display = canAdd ? 'block' : 'none';
-  document.getElementById('manageMatchesCard').style.display = canAdd ? 'block' : 'none';
-  // show delete buttons while rendering players based on role (renderPlayers uses currentUser.role)
+  document.getElementById('addPlayerWrap').style.display = canAdd ? 'block' : 'none';
+  document.getElementById('addMatchWrap').style.display = canAdd ? 'block' : 'none';
+  document.getElementById('addMatchWrap').style.display = canAdd ? 'none' : 'none'; // hidden until toggled
+  // delete button rendered conditionally during renderPlayers
+  save(STORAGE_KEYS.user, currentUser);
 }
 
-refreshAuthUI();
-
-/* ---------- Login / logout ---------- */
-function login(){
-  const u = document.getElementById('u_name').value.trim();
-  const p = document.getElementById('u_pass').value;
-  const found = demoUsers.find(x=>x.username===u && x.password===p);
-  if(found){
-    currentUser = { username: found.username, role: found.role };
-    saveAll();
-    refreshAuthUI();
-    toast('Welcome, ' + found.username + ' (' + found.role + ')');
-    show('home');
-  } else {
-    toast('Login failed — check credentials');
-  }
-}
-
-function logout(){
-  currentUser = { username:'Guest', role:'viewer' };
-  saveAll();
+document.getElementById('fillDemoBtn').addEventListener('click', ()=>{ document.getElementById('loginUser').value = 'admin'; document.getElementById('loginPass').value = '1234'; });
+document.getElementById('loginBtn').addEventListener('click', ()=> {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const found = DEMO_USERS.find(x=>x.username === u && x.password === p);
+  if (!found) { toast('Login failed'); return; }
+  currentUser = { username: found.username, role: found.role };
+  save(STORAGE_KEYS.user, currentUser);
   refreshAuthUI();
-  toast('Logged out');
-  show('home');
+  toast(`Welcome ${found.username}`);
+  soundAdd();
+  renderAll();
+});
+document.getElementById('logoutBtn').addEventListener('click', ()=> signOut());
+document.getElementById('logoutBtn2').addEventListener('click', ()=> signOut());
+function signOut(){
+  currentUser = { username: 'Guest', role: 'viewer' };
+  save(STORAGE_KEYS.user, currentUser);
+  refreshAuthUI();
+  toast('Signed out');
+  soundDel();
+  renderAll();
 }
-
-// quick fill demo
-function fillDemo(){ document.getElementById('u_name').value='admin'; document.getElementById('u_pass').value='1234'; }
-
-/* ---------- Players ---------- */
-function renderPlayers(filter=''){
-  const t = document.getElementById('playerTable');
-  t.innerHTML = '<tr><th>Name</th><th>Position</th><th>Age</th><th>Goals</th><th>Action</th></tr>';
-  const role = currentUser.role || 'viewer';
-  players.filter(p => {
-    if(!filter) return true;
-    const s = filter.toLowerCase();
-    return p.name.toLowerCase().includes(s) || p.position.toLowerCase().includes(s);
-  }).forEach((p,i)=>{
-    const row = t.insertRow();
-    const actions = [];
-    // delete only for admin
-    if(role === 'admin'){
-      actions.push(`<button class="btn danger" onclick="deletePlayer(${i})">Delete</button>`);
-    }
-    // manager cannot delete, but still can suggest edit (not implemented editing players here)
-    row.innerHTML = `<td>${p.name}</td><td>${p.position}</td><td>${p.age}</td><td>${p.goals}</td><td>${actions.join(' ')}</td>`;
-  });
-}
-
-document.getElementById('search').addEventListener('input', e=> renderPlayers(e.target.value));
-
-document.getElementById('playerForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  if(!['admin','manager'].includes(currentUser.role)){
-    return toast('Permission denied — need admin or manager to add players');
-  }
-  const name = document.getElementById('p_name').value.trim();
-  const pos = document.getElementById('p_position').value;
-  const age = Number(document.getElementById('p_age').value);
-  const goals = Number(document.getElementById('p_goals').value);
-  if(!name || !pos || !age && age!==0) return toast('Please fill all fields');
-  players.push({ name, position: pos, age, goals });
-  saveAll();
-  document.getElementById('playerForm').reset();
-  toast('Player added');
-  renderPlayers();
-  updateStats();
-  show('players');
+document.getElementById('impersonateBtn').addEventListener('click', ()=>{
+  const u = prompt('Enter username to switch (admin, manager, viewer) — leave blank to cancel');
+  if (!u) return;
+  const found = DEMO_USERS.find(x=>x.username===u);
+  if (!found) return toast('Unknown user');
+  const p = prompt('Password for ' + u + ':');
+  if (p !== found.password) { toast('Wrong password'); return; }
+  currentUser = { username: found.username, role: found.role };
+  save(STORAGE_KEYS.user, currentUser);
+  refreshAuthUI();
+  renderAll();
+  toast('Switched to ' + u);
 });
 
-function deletePlayer(index){
-  if(currentUser.role !== 'admin') return toast('Only admin can delete players');
-  const ok = confirm('Delete ' + players[index].name + '?');
-  if(!ok) return;
-  players.splice(index,1);
-  saveAll();
-  toast('Player deleted');
-  renderPlayers();
-  updateStats();
-}
-
-/* ---------- Matches ---------- */
-function renderMatches(){
-  const t = document.getElementById('matchTable');
-  t.innerHTML = '<tr><th>Date</th><th>Team A</th><th>Team B</th><th>Score</th><th>Action</th></tr>';
-  matches.forEach((m,i)=>{
-    const row = t.insertRow();
-    const canEdit = ['admin','manager'].includes(currentUser.role);
-    row.innerHTML = `<td>${m.date}</td><td>${m.teamA}</td><td>${m.teamB}</td><td>${m.score}</td>
-      <td>${canEdit ? `<button class="btn edit" onclick="updateMatchScore(${i})">Update</button>` : '<span class="muted">No edit</span>'}</td>`;
-  });
-}
-
-function openAddMatch(){
-  if(!['admin','manager'].includes(currentUser.role)) return toast('Only admin/manager can add matches');
-  document.getElementById('matchModal').style.display='flex';
-  document.getElementById('mmTitle').textContent='Add match';
-  // clear fields
-  document.getElementById('m_date').value='';
-  document.getElementById('m_teamA').value='';
-  document.getElementById('m_teamB').value='';
-  document.getElementById('m_score').value='-';
-  matchEditingIndex = -1;
-}
-
-function closeMatchModal(){ document.getElementById('matchModal').style.display='none'; }
-
-let matchEditingIndex = -1;
-function saveMatch(){
-  if(!['admin','manager'].includes(currentUser.role)) return toast('Not allowed');
-  const d=document.getElementById('m_date').value;
-  const a=document.getElementById('m_teamA').value.trim();
-  const b=document.getElementById('m_teamB').value.trim();
-  const s=document.getElementById('m_score').value.trim() || '-';
-  if(!d||!a||!b) return toast('Fill date and teams');
-  if(matchEditingIndex >= 0){
-    matches[matchEditingIndex] = { date:d, teamA:a, teamB:b, score:s };
-    toast('Match updated');
-  } else {
-    matches.push({ date:d, teamA:a, teamB:b, score:s });
-    toast('Match added');
+/* ===== Logo upload ===== */
+const logoInput = document.getElementById('logoInput');
+document.getElementById('uploadBtn').addEventListener('click', ()=> logoInput.click());
+logoInput.addEventListener('change', async (e)=>{
+  const f = e.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=> {
+    teamLogo = reader.result;
+    localStorage.setItem(STORAGE_KEYS.logo, teamLogo);
+    renderLogo();
+    toast('Logo uploaded');
+  };
+  reader.readAsDataURL(f);
+});
+function renderLogo(){
+  if (!teamLogo) {
+    logoPreview.innerHTML = '<span class="small muted">No logo</span>';
+    avatarInitials.style.display = 'block';
+    return;
   }
-  saveAll(); closeMatchModal(); renderMatches();
+  avatarInitials.style.display = 'none';
+  logoPreview.innerHTML = '<img src="'+teamLogo+'" alt="logo">';
+  // also set avatar in top-left
+  logoAvatar.innerHTML = '<img src="'+teamLogo+'" alt="logo">';
 }
 
-function updateMatchScore(i){
-  if(!['admin','manager'].includes(currentUser.role)) return toast('Not allowed');
-  const newScore = prompt(`Enter score for ${matches[i].teamA} vs ${matches[i].teamB}`, matches[i].score);
-  if(newScore === null) return;
-  matches[i].score = newScore;
-  saveAll(); renderMatches(); updateStats(); toast('Score updated');
-}
-
-/* ---------- POM & Stats ---------- */
-function updateStats(){
-  document.getElementById('statPlayers').textContent = players.length;
-  const totalGoals = players.reduce((s,p)=>s + Number(p.goals||0), 0);
-  document.getElementById('statGoals').textContent = totalGoals;
-  const top = players.slice().sort((a,b)=>b.goals - a.goals)[0];
-  document.getElementById('statPOM').textContent = top ? top.name : '—';
-  // render small list for manual POM selection
-  const pomList = document.getElementById('pomList'); pomList.innerHTML='';
-  players.forEach((p,i)=>{
-    const btn = document.createElement('button'); btn.className='btn';
-    btn.textContent = p.name + ' ('+p.goals+')';
-    btn.onclick = ()=>{ if(currentUser.role!=='admin') return toast('Only admin can set POM'); localStorage.setItem('fc_pom', p.name); toast('POM set: '+p.name); updateStats(); };
-    pomList.appendChild(btn);
+/* ===== Players UI ===== */
+function renderPlayers(filter=''){
+  const t = document.getElementById('playersTable');
+  t.innerHTML = '<tr><th>Name</th><th>Position</th><th>Age</th><th>Goals</th><th>Action</th></tr>';
+  const role = currentUser.role || 'viewer';
+  players.filter(p=>{
+    if (!filter) return true;
+    const s = filter.toLowerCase();
+    return p.name.toLowerCase().includes(s) || (p.position || '').toLowerCase().includes(s);
+  }).forEach(p=>{
+    const tr = t.insertRow();
+    tr.insertCell().textContent = p.name;
+    tr.insertCell().textContent = p.position;
+    tr.insertCell().textContent = p.age;
+    tr.insertCell().textContent = p.goals;
+    const actionCell = tr.insertCell();
+    // Actions: delete (admin only)
+    if (role === 'admin'){
+      const del = document.createElement('button'); del.className='btn danger'; del.textContent='Delete';
+      del.addEventListener('click', ()=> {
+        if (!confirm('Delete ' + p.name + '?')) return;
+        players = players.filter(x=>x.id !== p.id);
+        save(STORAGE_KEYS.players, players);
+        renderPlayers(document.getElementById('search').value);
+        renderAll();
+        toast('Player removed');
+        soundDel();
+      });
+      actionCell.appendChild(del);
+    } else {
+      actionCell.innerHTML = '<span class="muted small">—</span>';
+    }
   });
-  // show current POM
-  const curPOM = localStorage.getItem('fc_pom'); if(curPOM) document.getElementById('statPOM').textContent = curPOM;
 }
 
-function autoSelectPOM(){ if(players.length===0) return toast('No players'); const top = players.slice().sort((a,b)=>b.goals-a.goals)[0]; localStorage.setItem('fc_pom', top.name); updateStats(); toast('Auto-selected: '+top.name); }
-function clearPOM(){ localStorage.removeItem('fc_pom'); updateStats(); toast('POM cleared'); }
-
-/* ---------- impersonation (quick switch) ---------- */
-function impersonateMenu(){
-  const u = prompt('Enter username to switch (admin, manager, viewer) — Leave blank to cancel');
-  if(!u) return;
-  const found = demoUsers.find(x=>x.username===u);
-  if(!found){ toast('Unknown user'); return; }
-  // require password for security
-  const p = prompt('Enter password for ' + u);
-  if(p === null) return;
-  if(p !== found.password){ toast('Wrong password'); return; }
-  currentUser = { username: found.username, role: found.role };
-  saveAll();
-  refreshAuthUI();
-  toast('Switched to ' + found.username);
-}
-
-/* ---------- boot ---------- */
-function boot(){
-  // ensure currentUser has default role viewer if not set
-  if(!currentUser || !currentUser.role) currentUser = { username:'Guest', role:'viewer' };
-  refreshAuthUI();
-  show('home');
+/* Add Player */
+document.getElementById('addPlayerBtn').addEventListener('click', ()=>{
+  if (!['admin','manager'].includes(currentUser.role)) { toast('Permission denied'); return; }
+  const name = document.getElementById('p_name').value.trim();
+  const position = document.getElementById('p_position').value.trim();
+  const age = Number(document.getElementById('p_age').value || 0);
+  const goals = Number(document.getElementById('p_goals').value || 0);
+  if (!name || !position) { toast('Fill name and position'); return; }
+  players.push({ id: uid(), name, position, age, goals });
+  save(STORAGE_KEYS.players, players);
+  document.getElementById('p_name').value=''; document.getElementById('p_position').value=''; document.getElementById('p_age').value=''; document.getElementById('p_goals').value='';
   renderPlayers();
-  renderMatches();
-  updateStats();
+  renderChart();
+  renderAll();
+  toast('Player added');
+  soundAdd();
+});
+document.getElementById('resetPlayerBtn').addEventListener('click', ()=> {
+  document.getElementById('p_name').value=''; document.getElementById('p_position').value=''; document.getElementById('p_age').value=''; document.getElementById('p_goals').value='';
+});
+
+/* Search + refresh */
+document.getElementById('search').addEventListener('input', (e)=> renderPlayers(e.target.value));
+document.getElementById('refreshPlayers').addEventListener('click', ()=> renderPlayers());
+
+/* ===== Matches UI ===== */
+function renderMatches(){
+  const t = document.getElementById('matchesTable');
+  t.innerHTML = '<tr><th>Date</th><th>Team A</th><th>Team B</th><th>Score</th><th>Action</th></tr>';
+  const role = currentUser.role || 'viewer';
+  matches.forEach(m=>{
+    const tr = t.insertRow();
+    tr.insertCell().textContent = m.date || '';
+    tr.insertCell().textContent = m.teamA;
+    tr.insertCell().textContent = m.teamB;
+    tr.insertCell().textContent = m.score;
+    const ac = tr.insertCell();
+    if (['admin','manager'].includes(role)){
+      const upd = document.createElement('button'); upd.className='btn'; upd.textContent='Edit';
+      upd.addEventListener('click', ()=> {
+        const newScore = prompt(`Set score for ${m.teamA} vs ${m.teamB}`, m.score || '-');
+        if (newScore === null) return;
+        m.score = newScore;
+        save(STORAGE_KEYS.matches, matches);
+        renderMatches();
+        renderAll();
+        toast('Match score updated');
+      });
+      ac.appendChild(upd);
+    } else {
+      ac.innerHTML = '<span class="muted small">—</span>';
+    }
+  });
 }
-boot();
+document.getElementById('toggleAddMatch').addEventListener('click', ()=>{
+  const wrap = document.getElementById('addMatchWrap'); wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+});
+document.getElementById('cancelAddMatch').addEventListener('click', ()=> document.getElementById('addMatchWrap').style.display = 'none');
+document.getElementById('addMatchBtn').addEventListener('click', ()=>{
+  if (!['admin','manager'].includes(currentUser.role)) { toast('Permission denied'); return; }
+  const date = document.getElementById('m_date').value || nowISO();
+  const a = document.getElementById('m_teamA').value.trim();
+  const b = document.getElementById('m_teamB').value.trim();
+  const s = document.getElementById('m_score').value.trim() || '-';
+  if (!a || !b) return toast('Enter both teams');
+  matches.push({ id: uid(), date, teamA: a, teamB: b, score: s });
+  save(STORAGE_KEYS.matches, matches);
+  document.getElementById('m_date').value=''; document.getElementById('m_teamA').value=''; document.getElementById('m_teamB').value=''; document.getElementById('m_score').value='';
+  renderMatches();
+  renderAll();
+  toast('Match added');
+});
+
+/* ===== Settings: export/import/clear ===== */
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const data = { players, matches, pom: POM, user: currentUser, logo: teamLogo };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'fc-export.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', (e)=>{
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader(); r.onload = ()=>{
+    try {
+      const data = JSON.parse(r.result);
+      if (data.players) players = data.players;
+      if (data.matches) matches = data.matches;
+      if (data.pom) { POM = data.pom; localStorage.setItem(STORAGE_KEYS.pom, POM); }
+      if (data.logo) { teamLogo = data.logo; localStorage.setItem(STORAGE_KEYS.logo, teamLogo); renderLogo(); }
+      save(STORAGE_KEYS.players, players); save(STORAGE_KEYS.matches, matches);
+      toast('Imported data');
+      renderAll();
+    } catch(e){ toast('Import failed'); }
+  }; r.readAsText(f);
+});
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  if (!confirm('Clear all stored data? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEYS.players); localStorage.removeItem(STORAGE_KEYS.matches); localStorage.removeItem(STORAGE_KEYS.pom); localStorage.removeItem(STORAGE_KEYS.logo);
+  players = []; matches = []; POM = null; teamLogo = null; currentUser = { username: 'Guest', role: 'viewer' };
+  save(STORAGE_KEYS.user, currentUser);
+  renderLogo(); refreshAuthUI(); renderAll(); toast('Cleared');
+});
+
+/* ===== POM selection ===== */
+function renderPOMList(){
+  const el = document.getElementById('pomList'); el.innerHTML = '';
+  players.forEach(p=>{
+    const b = document.createElement('button'); b.className='btn ghost'; b.textContent = p.name + ' (' + p.goals + ')';
+    b.addEventListener('click', ()=>{
+      if (currentUser.role !== 'admin'){ toast('Only admin may set Player of the Month'); return; }
+      POM = p.name; localStorage.setItem(STORAGE_KEYS.pom, POM); renderAll(); toast('POM set: ' + POM);
+    });
+    el.appendChild(b);
+  });
+}
+document.getElementById('autoPOM').addEventListener('click', ()=> {
+  if (players.length === 0) return toast('No players');
+  const top = players.slice().sort((a,b)=>b.goals - a.goals)[0];
+  POM = top.name; localStorage.setItem(STORAGE_KEYS.pom, POM); renderAll(); toast('Auto POM: ' + POM);
+});
+document.getElementById('clearPOM').addEventListener('click', ()=> { POM = null; localStorage.removeItem(STORAGE_KEYS.pom); renderAll(); toast('POM cleared'); });
+document.getElementById('autoPomBtn').addEventListener('click', ()=> document.getElementById('autoPOM').click());
+document.getElementById('clearPomBtn').addEventListener('click', ()=> document.getElementById('clearPOM').click());
+
+/* ===== small utilities ===== */
+document.getElementById('showToastDemo').addEventListener('click', ()=> toast('This is a demo toast'));
+document.getElementById('refreshAll').addEventListener('click', ()=> renderAll());
+document.getElementById('fillDemoBtn').addEventListener('click', ()=> { document.getElementById('loginUser').value='admin'; document.getElementById('loginPass').value='1234'; });
+
+/* ===== Chart.js for goals per player ===== */
+let chart = null;
+function renderChart(){
+  const ctx = document.getElementById('goalsChart').getContext('2d');
+  const labels = players.map(p=>p.name);
+  const data = players.map(p=>p.goals || 0);
+  if (chart) { chart.data.labels = labels; chart.data.datasets[0].data = data; chart.update(); return; }
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Goals', data, backgroundColor: 'rgba(45,212,191,0.9)', borderRadius:6 }]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      scales:{ x:{ ticks:{ color:'#dffaf0' } }, y:{ ticks:{ color:'#dffaf0' }, beginAtZero:true } },
+      plugins:{ legend:{ display:false } }
+    }
+  });
+}
+
+/* ===== Render everything ===== */
+function renderAll(){
+  save(STORAGE_KEYS.players, players);
+  save(STORAGE_KEYS.matches, matches);
+  if (localStorage.getItem(STORAGE_KEYS.pom)) POM = localStorage.getItem(STORAGE_KEYS.pom);
+  renderPlayers(document.getElementById('search').value || '');
+  renderMatches();
+  renderChart();
+  renderPOMList();
+  document.getElementById('cardPlayers').textContent = players.length;
+  const totalGoals = players.reduce((s,p)=>s + Number(p.goals||0),0);
+  document.getElementById('cardGoals').textContent = totalGoals;
+  document.getElementById('cardPOM').textContent = POM || '—';
+  document.getElementById('statPOM'); // no-op placeholder
+  renderLogo();
+  refreshAuthUI();
+}
+
+/* Boot */
+(function boot(){
+  // Ensure POM loaded
+  if (localStorage.getItem(STORAGE_KEYS.pom)) POM = localStorage.getItem(STORAGE_KEYS.pom);
+  if (localStorage.getItem(STORAGE_KEYS.logo)) teamLogo = localStorage.getItem(STORAGE_KEYS.logo);
+  refreshAuthUI();
+  renderAll();
+  // attach more UI handlers
+  document.getElementById('loginOpenBtn').addEventListener('click', ()=> {
+    document.querySelector('html,body').scrollTop = 0;
+    document.getElementById('loginUser').focus();
+  });
+  // Nav default
+  showSection('dashboard');
+})();
+
 </script>
 </body>
-          </html>
+</html>
