@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wandoo United FC - Club Management</title>
+<title>Manchester United FC - Club Management</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:Arial,sans-serif;background:#f4f4f4;overflow-x:hidden;}
-nav{display:flex;background:#1a1a1a;color:#fff;padding:10px 20px;align-items:center;flex-wrap:wrap;}
+body{font-family:Arial,sans-serif;background:#f5f5f5;overflow-x:hidden;}
+nav{display:flex;background:#a50000;color:#fff;padding:10px 20px;align-items:center;flex-wrap:wrap;}
 nav a{color:#fff;text-decoration:none;margin-right:20px;font-weight:bold;}
 nav a:hover{text-decoration:underline;}
-#hero{display:flex;flex-direction:row;align-items:center;justify-content:space-between;padding:50px 20px;background:#e5f0ff;overflow:hidden;flex-wrap:wrap;}
+#hero{display:flex;flex-direction:row;align-items:center;justify-content:space-between;padding:50px 20px;background:#ff0000;overflow:hidden;flex-wrap:wrap;color:#fff;}
 #hero-text{max-width:50%;}
-#hero-text h1{font-size:3em;background:linear-gradient(to right,#ff416c,#ff4b2b);-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
+#hero-text h1{font-size:3em;background:linear-gradient(to right,#fff, #ffd700);-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
 #hero-text p{font-size:1.2em;margin-bottom:20px;}
 #hero-text button{padding:10px 20px;margin-right:10px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;}
-#get-started{background:#ff416c;color:#fff;}
-#view-demo{background:#ff4b2b;color:#fff;}
+#get-started{background:#ffd700;color:#a50000;}
+#view-demo{background:#fff;color:#a50000;}
 #hero-image{max-width:45%;animation: float 3s ease-in-out infinite alternate;}
 @keyframes float{0%{transform:translateY(0px);}100%{transform:translateY(-20px);}}
 #features{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;}
@@ -25,12 +25,12 @@ nav a:hover{text-decoration:underline;}
 .feature-card:hover{transform:translateY(-10px);box-shadow:0 4px 15px rgba(0,0,0,0.2);}
 main{display:flex;flex-wrap:wrap;justify-content:center;padding:20px;gap:20px;}
 .card{background:#fff;border-radius:10px;padding:15px;width:250px;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
-.card h3{margin-bottom:5px;}
+.card h3{margin-bottom:5px;color:#a50000;}
 .card p{margin-bottom:5px;}
-.card button{margin-top:5px;padding:5px 10px;border:none;border-radius:5px;background:#ff416c;color:#fff;cursor:pointer;}
+.card button{margin-top:5px;padding:5px 10px;border:none;border-radius:5px;background:#a50000;color:#fff;cursor:pointer;}
 #music-player{position:fixed;bottom:20px;left:20px;background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.3);z-index:100;width:300px;}
-#music-toggle{display:inline-block;margin-top:10px;padding:5px 10px;background:#1a1a1a;color:#fff;border:none;border-radius:5px;cursor:pointer;}
-h2{text-align:center;margin-bottom:20px;}
+#music-toggle{display:inline-block;margin-top:10px;padding:5px 10px;background:#a50000;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+h2{text-align:center;margin-bottom:20px;color:#a50000;}
 ul{list-style:none;padding:0;max-height:150px;overflow-y:auto;}
 li{padding:10px;margin:5px 0;background:#eee;border-radius:5px;cursor:pointer;}
 li:hover{background:#ddd;}
@@ -54,16 +54,16 @@ audio{width:100%;margin-top:10px;display:block;}
 
 <section id="hero">
   <div id="hero-text">
-    <h1>Wandoo United FC</h1>
-    <p>Manage your football club efficiently with stats, player management, matches, substitutes, music, and live match simulation!</p>
+    <h1>Manchester United FC</h1>
+    <p>Manage your legendary club with stats, live matches, player transfers, and iconic music!</p>
     <button id="get-started">Get Started</button>
     <button id="view-demo">View Demo</button>
   </div>
   <div id="hero-image">
     <svg width="300" height="200" viewBox="0 0 300 200">
-      <rect x="0" y="0" width="300" height="200" fill="#6bbf59" stroke="#fff" stroke-width="2"/>
-      <circle cx="150" cy="100" r="20" stroke="#fff" stroke-width="2" fill="none"/>
-      <line x1="150" y1="0" x2="150" y2="200" stroke="#fff" stroke-width="2"/>
+      <rect x="0" y="0" width="300" height="200" fill="#ffd700" stroke="#a50000" stroke-width="3"/>
+      <circle cx="150" cy="100" r="20" stroke="#a50000" stroke-width="3" fill="none"/>
+      <line x1="150" y1="0" x2="150" y2="200" stroke="#a50000" stroke-width="2"/>
     </svg>
   </div>
 </section>
@@ -122,7 +122,7 @@ audio{width:100%;margin-top:10px;display:block;}
     <tr><th>Team</th><th>Score</th></tr>
   </thead>
   <tbody>
-    <tr><td>Wandoo United</td><td id="score-us">0</td></tr>
+    <tr><td>Manchester United</td><td id="score-us">0</td></tr>
     <tr><td>Opponent</td><td id="score-opponent">0</td></tr>
   </tbody>
 </table>
@@ -139,25 +139,26 @@ audio{width:100%;margin-top:10px;display:block;}
 </section>
 
 <div id="music-player">
-  <h2>🎶 Football Anthems</h2>
+  <h2>🎶 Club Anthems</h2>
   <ul id="playlist"></ul>
   <audio id="player" controls autoplay loop></audio>
   <button id="music-toggle">Toggle Music</button>
 </div>
 
 <script>
+// ===== Manchester United Squad =====
 let players=[
-  {name:"Victor Wanyama",position:"Midfielder",age:30,goals:5,assists:7,sub:false},
-  {name:"Michael Olunga",position:"Forward",age:27,goals:15,assists:6,sub:false},
-  {name:"Eric Johana",position:"Defender",age:25,goals:1,assists:2,sub:false},
-  {name:"Arnold Origi",position:"Goalkeeper",age:34,goals:0,assists:0,sub:false},
-  {name:"Clinton N'Jie",position:"Forward",age:26,goals:10,assists:4,sub:false},
-  {name:"Eric Ouma",position:"Defender",age:23,goals:0,assists:1,sub:true},
-  {name:"Joash Onyango",position:"Defender",age:24,goals:2,assists:1,sub:false},
-  {name:"Aboud Omar",position:"Defender",age:28,goals:1,assists:3,sub:true},
-  {name:"Dennis Oliech",position:"Forward",age:32,goals:12,assists:5,sub:false},
-  {name:"McDonald Mariga",position:"Midfielder",age:31,goals:3,assists:6,sub:true},
-  {name:"Patrick Matasi",position:"Goalkeeper",age:29,goals:0,assists:0,sub:false}
+  {name:"David de Gea",position:"Goalkeeper",age:32,goals:0,assists:0,sub:false},
+  {name:"Harry Maguire",position:"Defender",age:29,goals:2,assists:1,sub:false},
+  {name:"Raphaël Varane",position:"Defender",age:30,goals:1,assists:0,sub:false},
+  {name:"Luke Shaw",position:"Defender",age:27,goals:1,assists:3,sub:false},
+  {name:"Bruno Fernandes",position:"Midfielder",age:27,goals:15,assists:12,sub:false},
+  {name:"Casemiro",position:"Midfielder",age:30,goals:4,assists:3,sub:false},
+  {name:"Marcus Rashford",position:"Forward",age:25,goals:12,assists:7,sub:false},
+  {name:"Anthony Martial",position:"Forward",age:27,goals:8,assists:5,sub:true},
+  {name:"Jadon Sancho",position:"Forward",age:23,goals:6,assists:7,sub:true},
+  {name:"Fred",position:"Midfielder",age:28,goals:2,assists:4,sub:true},
+  {name:"Dean Henderson",position:"Goalkeeper",age:26,goals:0,assists:0,sub:true}
 ];
 
 const playerContainer=document.getElementById('player-container');
@@ -169,7 +170,7 @@ const scoreUsDisplay=document.getElementById('score-us');
 const scoreOpponentDisplay=document.getElementById('score-opponent');
 let matches=[];
 
-// ===== Players Management =====
+// ===== Player Rendering =====
 function renderPlayers(){
   playerContainer.innerHTML='';
   players.forEach((p,i)=>{
@@ -243,9 +244,9 @@ const playlist=document.getElementById('playlist');
 const playerAudio=document.getElementById('player');
 let musicPlaying=true;
 const musicManifest=[
-  {title:"Wavin' Flag",artist:"K'naan",file:"music/wavin_flag.mp3"},
-  {title:"Sweet Victory",artist:"David Glen Eisley",file:"music/sweet_victory.mp3"},
-  {title:"We Will Rock You",artist:"Queen",file:"music/we_will_rock_you.mp3"}
+  {title:"Glory Glory Man United",artist:"Manchester United Choir",file:"music/glory_glory.mp3"},
+  {title:"We Are The Reds",artist:"Fan Anthem",file:"music/we_are_the_reds.mp3"},
+  {title:"Ole's at the Wheel",artist:"Fan Chant",file:"music/oles_at_the_wheel.mp3"}
 ];
 
 musicManifest.forEach((song,index)=>{
@@ -348,17 +349,4 @@ function startMatch(opponent){
 
     if(matchTime>=90){
       clearInterval(interval);
-      matches.push({opponent,date:new Date().toLocaleDateString(),score:`${scoreUs}-${scoreOpponent}`});
-      const row=document.createElement('tr');
-      row.innerHTML=`<td>${opponent}</td><td>${new Date().toLocaleDateString()}</td><td>${scoreUs}-${scoreOpponent}</td>`;
-      matchTable.appendChild(row);
-      const li=document.createElement('li');
-      li.textContent=`Match ended! Final score: Wandoo United ${scoreUs} - ${scoreOpponent} ${opponent}`;
-      eventLog.appendChild(li);
-    }
-
-  },500); // Fast simulation for demo
-}
-</script>
-</body>
-   </html>
+      matches.push({opponent,date:new Date().
