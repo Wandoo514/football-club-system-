@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manchester United FC - Live Match</title>
+<link rel="stylesheet" href="css/live.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="squad.html">Squad</a>
+  <a href="matches.html">Matches</a>
+  <a href="live.html">Live Match</a>
+  <a href="stats.html">Stats</a>
+  <a href="music.html">Music</a>
+</nav>
+
+<section class="page-section">
+  <h2>Live Match Simulation</h2>
+  <form id="simulate-form" class="form-card">
+    <input type="text" id="sim-opponent" placeholder="Opponent" required>
+    <button type="submit">Start Match</button>
+  </form>
+
+  <p id="match-timer">Match Time: 0'</p>
+  <ul id="event-log"></ul>
+
+  <table id="live-match-table">
+    <thead><tr><th>Team</th><th>Score</th></tr></thead>
+    <tbody>
+      <tr><td>Manchester United</td><td id="score-us">0</td></tr>
+      <tr><td>Opponent</td><td id="score-opponent">0</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<script src="js/live.js"></script>
+</body>
+</html>
