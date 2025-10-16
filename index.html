@@ -1,1 +1,46 @@
-<!DOCTYPE html><html><head><title>Wandoo United FC - Home</title></head><body><h1>Welcome to Wandoo United FC</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manchester United FC - Home</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/images/club_logo.png" alt="Club Logo" class="logo">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="squad.html">Squad</a>
+      <a href="fixtures.html">Fixtures</a>
+      <a href="music.html">Music</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+  <section class="hero">
+    <div class="sweeping-lights"></div>
+    <div class="hero-content">
+      <h1>Manchester United FC</h1>
+      <p>The Red Devils – Passion. Glory. Tradition.</p>
+      <button id="toggleTheme">Toggle Theme</button>
+    </div>
+  </section>
+  <footer>
+    <div class="sponsor-glow">Official Sponsors</div>
+  </footer>
+  <script>
+    const toggleBtn = document.getElementById('toggleTheme');
+    const bodyEl = document.body;
+    if (localStorage.getItem('theme') === 'dark') {
+      bodyEl.classList.add('dark');
+    }
+    toggleBtn.addEventListener('click', () => {
+      bodyEl.classList.toggle('dark');
+      localStorage.setItem('theme', bodyEl.classList.contains('dark') ? 'dark' : 'light');
+    });
+  </script>
+</body>
+                                             </html>
