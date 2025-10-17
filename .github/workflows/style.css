@@ -1,0 +1,8 @@
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#e41b17;--bg:#0a0a0a}
+body{font-family:Arial,sans-serif;background:var(--bg);color:#fff}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.nav{display:flex;gap:12px;margin-bottom:20px}
+.btn{background:var(--red);padding:8px 12px;border-radius:8px;color:#fff;text-decoration:none}
+.players-grid{display:flex;gap:12px;flex-wrap:wrap}
+.player-card{background:#111;padding:12px;border-radius:8px;width:180px}
